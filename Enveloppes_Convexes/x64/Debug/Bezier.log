@@ -1,0 +1,29 @@
+﻿  Main.cpp
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Color.h(12,34): warning C4042: 'b' : classe de stockage incorrecte
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY' : redéfinition de macro
+D:\Downloads\Bezier-master\Bezier-master\libs\glfw-3.3\include\GLFW\glfw3.h(104): message : voir la définition précédente de 'APIENTRY'
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(15,8): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(16,8): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(27,40): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(40,41): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(45,36): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(46,41): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(46,59): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(47,36): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(48,41): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(48,59): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(49,35): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(50,41): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(50,59): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Matrix.h(51,35): warning C4227: anachronisme utilisé : qualificateurs de référence ignorés
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(88,15): warning C4244: 'argument' : conversion de 'GLuint64' en 'GLuint', perte possible de données
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(90,45): warning C4244: 'argument' : conversion de 'GLuint64' en 'GLuint', perte possible de données
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(91,44): warning C4244: 'argument' : conversion de 'GLuint64' en 'GLuint', perte possible de données
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(92,50): warning C4244: 'argument' : conversion de 'GLuint64' en 'GLuint', perte possible de données
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(94,50): warning C4244: 'argument' : conversion de 'GLuint64' en 'GLuint', perte possible de données
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(95,46): warning C4244: 'argument' : conversion de 'GLuint64' en 'GLuint', perte possible de données
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(96,44): warning C4244: 'argument' : conversion de 'GLuint64' en 'GLuint', perte possible de données
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(190,44): warning C4267: 'argument' : conversion de 'size_t' en 'GLsizei', perte possible de données
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(205,109): warning C4267: 'argument' : conversion de 'size_t' en 'GLsizei', perte possible de données
+D:\Downloads\Bezier-master\Bezier-master\Bezier\Main.cpp(234,46): warning C4305: 'argument' : troncation de 'double' à 'float'
+  Bezier.vcxproj -> D:\Downloads\Bezier-master\Bezier-master\x64\Debug\Enveloppe Convexe.exe

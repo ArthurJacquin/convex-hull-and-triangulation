@@ -1,0 +1,20 @@
+﻿  GLShader.cpp
+  Vertex.cpp
+D:\Downloads\Bezier-master\Bezier-master\Enveloppes_Convexes\Color.h(12,34): warning C4042: 'b' : classe de stockage incorrecte
+  Génération de code en cours...
+MSVCRTD.lib(initializers.obj) : warning LNK4098: conflit entre la bibliothèque par défaut 'libcmt.lib' et les autres bibliothèques ; utilisez /NODEFAULTLIB:library
+LINK : warning LNK4217: le symbole '__glewAttachShader' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: bool __cdecl GLShader::Create(void)" (?Create@GLShader@@QEAA_NXZ)'
+LINK : warning LNK4217: le symbole '__glewCompileShader' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: bool __cdecl GLShader::LoadFragmentShader(char const *)" (?LoadFragmentShader@GLShader@@QEAA_NPEBD@Z)'
+LINK : warning LNK4217: le symbole '__glewCreateProgram' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: bool __cdecl GLShader::Create(void)" (?Create@GLShader@@QEAA_NXZ)'
+LINK : warning LNK4217: le symbole '__glewCreateShader' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: bool __cdecl GLShader::LoadFragmentShader(char const *)" (?LoadFragmentShader@GLShader@@QEAA_NPEBD@Z)'
+LINK : warning LNK4217: le symbole '__glewDeleteProgram' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: bool __cdecl GLShader::Create(void)" (?Create@GLShader@@QEAA_NXZ)'
+LINK : warning LNK4217: le symbole '__glewDeleteShader' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: void __cdecl GLShader::Destroy(void)" (?Destroy@GLShader@@QEAAXXZ)'
+LINK : warning LNK4217: le symbole '__glewDetachShader' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: void __cdecl GLShader::Destroy(void)" (?Destroy@GLShader@@QEAAXXZ)'
+LINK : warning LNK4217: le symbole '__glewGetProgramInfoLog' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: bool __cdecl GLShader::Create(void)" (?Create@GLShader@@QEAA_NXZ)'
+LINK : warning LNK4217: le symbole '__glewGetProgramiv' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: bool __cdecl GLShader::Create(void)" (?Create@GLShader@@QEAA_NXZ)'
+LINK : warning LNK4217: le symbole '__glewGetShaderInfoLog' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"bool __cdecl ValidateShader(unsigned int)" (?ValidateShader@@YA_NI@Z)'
+LINK : warning LNK4217: le symbole '__glewGetShaderiv' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"bool __cdecl ValidateShader(unsigned int)" (?ValidateShader@@YA_NI@Z)'
+LINK : warning LNK4217: le symbole '__glewLinkProgram' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: bool __cdecl GLShader::Create(void)" (?Create@GLShader@@QEAA_NXZ)'
+LINK : warning LNK4217: le symbole '__glewShaderSource' défini dans 'glew32s.lib(glew.obj)' est importé par 'GLShader.obj' dans la fonction '"public: bool __cdecl GLShader::LoadFragmentShader(char const *)" (?LoadFragmentShader@GLShader@@QEAA_NPEBD@Z)'
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' n'a pu être trouvé avec 'glew32s.lib(glew.obj)' ou sur 'D:\Downloads\Bezier-master\Bezier-master\x64\Debug\vc120.pdb' ; l'objet sera lié sans informations de débogage
+  Enveloppes_Convexes.vcxproj -> D:\Downloads\Bezier-master\Bezier-master\x64\Debug\Enveloppe Convexe.exe
