@@ -105,17 +105,17 @@ void updateVBO()
 	glBindBuffer(GL_ARRAY_BUFFER, VBOCurrent);
 	
 	//Position
-	int loc_position = glGetAttribLocation(BasicShader.GetProgram(), "a_position");
+	int loc_position = 0;
 	glVertexAttribPointer(loc_position, 3, GL_DOUBLE, GL_FALSE, sizeof(Vertex), 0);
 	glEnableVertexAttribArray(loc_position);
 	
 	//Color
-	int loc_color = glGetAttribLocation(BasicShader.GetProgram(), "a_color");
+	int loc_color = 1;
 	glVertexAttribPointer(loc_color, 3, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex, r));
 	glEnableVertexAttribArray(loc_color);
 
 	//Normals
-	int loc_normal = glGetAttribLocation(BasicShader.GetProgram(), "a_normal");
+	int loc_normal = 2;
 	glVertexAttribPointer(loc_normal, 3, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex, normal));
 	glEnableVertexAttribArray(loc_normal);
 }

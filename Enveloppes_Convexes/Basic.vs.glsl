@@ -1,11 +1,11 @@
 #version 420
-attribute vec3 a_position;
-attribute vec3 a_color;
-attribute vec3 a_normal;
+layout(location = 0) in vec3 a_position;
+layout(location = 1) in vec3 a_color;
+layout(location = 2) in vec3 a_normal;
 
-varying vec4 v_color;
-varying vec3 v_normal;
-varying vec3 v_fragPos;
+out vec4 v_color;
+out vec3 v_normal;
+out vec3 v_fragPos;
 
 uniform mat4 u_viewMatrix;
 uniform mat4 u_projectionMatrix;
