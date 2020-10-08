@@ -24,4 +24,6 @@ struct Vertex
 	void setColor(Color color);
 	void setPositionUsingMouse(double x, double y);
 	void setNormal(Vec3 n);
+
+	Vec3 GetPos()const { return Vec3(x, y, z); }
 };

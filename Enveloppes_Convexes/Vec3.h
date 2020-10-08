@@ -158,4 +158,11 @@ public:
 	float dot(Vec3 b) {
 		return (*this).x * b.x + (*this).y * b.y + (*this).z * b.z;
 	}
+
+	//return the angle between 2 vectors in radians
+	float Angle(Vec3 b)
+	{
+		float alpha = acos(this->dot(b) / (this->magnitude() * b.magnitude()));
+		return alpha;
+	}
 };

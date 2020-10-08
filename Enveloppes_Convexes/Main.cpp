@@ -20,6 +20,7 @@
 #include "Input.h"
 #include "OpenGLcore.h"
 #include "ConvexEnvelope.h"
+#include "Algos.h"
 
 #include "imgui.h"
 #include "examples\\imgui_impl_opengl3.h"
@@ -197,7 +198,7 @@ void Display(GLFWwindow* window)
 		VBOCurrent = convexEnv[i].GetVBO();
 		updateVBO();
 
-		glDrawArrays(GL_LINE, 0, convexEnv[i].GetPointsCount());
+		glDrawArrays(GL_LINE_LOOP, 0, convexEnv[i].GetPointsCount());
 	}
 
 	//Draw Meshes
@@ -264,6 +265,15 @@ void displayGUI()
 	ImGui::Text("  Pour deplacer un point :");
 	ImGui::Text("  Alt + clic droit");
 	ImGui::Text("");
+
+	ImGui::Separator();
+	ImGui::Text("            Enveloppes convexes    ");
+	ImGui::Text("");
+
+	if (ImGui::Button("Jarvis"))
+	{
+		convexEnv.push_back(Jarvis(pointsCloud));
+	}
 
 	ImGui::Separator();
 	ImGui::Text("            Visualizer    ");

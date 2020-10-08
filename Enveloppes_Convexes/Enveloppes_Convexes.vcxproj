@@ -164,6 +164,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\GLShader.cpp" />
+    <ClCompile Include="Algos.cpp" />
+    <ClCompile Include="Algos.h" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="ConvexEnvelope.cpp" />
     <ClCompile Include="Input.cpp" />
