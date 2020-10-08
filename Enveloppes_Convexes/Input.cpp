@@ -7,7 +7,7 @@
 # define M_PI           3.14159265358979323846  /* pi */
 
 extern int width, height;
-extern std::vector<Vertex> vertices;
+extern std::vector<Vertex> pointsCloud;
 
 extern Color choosedColor;
 extern float step;
@@ -37,7 +37,7 @@ Input::Input()
 
 void Input::deleteVertex()
 {
-	vertices.clear();
+	pointsCloud.clear();
 }
 
 float Input::getDistance(float xa, float ya, Vertex v)
@@ -64,7 +64,7 @@ void Input::mouse_button_callback(GLFWwindow* window, int button, int action, in
 		{
 			Color col(1.0f, 1.0f, 1.0f);
 			Vertex newPoint = Vertex(-1.0f + 2 * xpos / width, 1.0f - 2 * ypos / height, 0.0, col.x, col.y, col.z);
-			vertices.push_back(newPoint);
+			pointsCloud.push_back(newPoint);
 		}
 	}
 
@@ -86,10 +86,10 @@ void Input::keyboard_button_callback(GLFWwindow* window, int key, int scancode, 
 {
 	if (key == GLFW_KEY_ENTER && action == GLFW_PRESS || key == GLFW_KEY_KP_ENTER && action == GLFW_PRESS) // Finish shape
 	{
-		if (vertices.size() > 2)
+		if (pointsCloud.size() > 2)
 		{
 			//TODO : Create shape
-			vertices.clear();
+			pointsCloud.clear();
 		}
 	}
 

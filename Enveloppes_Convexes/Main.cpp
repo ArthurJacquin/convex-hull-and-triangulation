@@ -19,6 +19,7 @@
 #include "Vertex.h"
 #include "Input.h"
 #include "OpenGLcore.h"
+#include "ConvexEnvelope.h"
 
 #include "imgui.h"
 #include "examples\\imgui_impl_opengl3.h"
@@ -34,7 +35,7 @@
 #include "Color.h"
 #include "Mesh.h"
 
-const char* glsl_version = "#version 150";
+const char* glsl_version = "#version 420";
 
 //Variables globales
 GLShader BasicShader;
@@ -43,7 +44,8 @@ uint32_t VBOCurrent;
 Input input;
 
 //tableau de positions du tableau en cours
-std::vector<Vertex> vertices;
+std::vector<Vertex> pointsCloud;
+std::vector<ConvexEnvelope> convexEnv;
 std::vector<Mesh> meshes;
 
 bool movingPoint;
@@ -183,11 +185,20 @@ void Display(GLFWwindow* window)
 	glUniform3fv(cameraPos_location, 1, &input.getPosition()[0]);
 
 	//Create VBO with vertices
-	VBOCurrent = CreateBufferObject(BufferType::VBO, sizeof(Vertex) * vertices.size(), vertices.data());
+	VBOCurrent = CreateBufferObject(BufferType::VBO, sizeof(Vertex) * pointsCloud.size(), pointsCloud.data());
 	updateVBO();
 	
 	//Draw points
-	glDrawArrays(GL_POINTS, 0, vertices.size());
+	glDrawArrays(GL_POINTS, 0, pointsCloud.size());
+
+	//Draw convex Envelope
+	for (int i = 0; i < convexEnv.size(); i++)
+	{
+		VBOCurrent = convexEnv[i].GetVBO();
+		updateVBO();
+
+		glDrawArrays(GL_LINE, 0, convexEnv[i].GetPointsCount());
+	}
 
 	//Draw Meshes
 	for (int i = 0; i < meshes.size(); ++i)
