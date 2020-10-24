@@ -165,4 +165,11 @@ public:
 		float alpha = acos(this->dot(b) / (this->magnitude() * b.magnitude()));
 		return alpha;
 	}
+
+	float AngleClockwise(Vec3 b)
+	{
+		float det = (*this).x * b.y - (*this).y * b.x;
+		float alpha = atan2(det, this->dot(b));
+		return alpha;
+	}
 };

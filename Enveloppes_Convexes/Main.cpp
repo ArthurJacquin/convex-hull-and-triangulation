@@ -275,6 +275,11 @@ void displayGUI()
 		convexEnv.push_back(Jarvis(pointsCloud));
 	}
 
+	if(ImGui::Button("GrahamScan"))
+	{
+		convexEnv.push_back(GrahamScan(pointsCloud));
+	}
+
 	ImGui::Separator();
 	ImGui::Text("            Visualizer    ");
 	ImGui::Text("");
