@@ -1,5 +1,31 @@
 #include "Algos.h"
 
+Vertex FindBarycenter(std::vector<Vertex> S)
+{
+	int size = S.size();
+	if (size <= 0)
+		return Vertex(0.f, .0f, .0f);
+	
+	double avgX = 0;
+	double avgY = 0;
+	double avgZ = 0;
+
+	for(int i = 0; i < size; ++i)
+	{
+		avgX += S[i].x;
+		avgY += S[i].y;
+		avgZ += S[i].z;
+	}
+
+	avgX /= size;
+	avgY /= size;
+	avgZ /= size;
+	
+	Vertex c(avgX, avgY, avgZ);
+
+	return c;
+}
+
 ConvexEnvelope Jarvis(std::vector<Vertex> S)
 {
 	int i0 = 0;
@@ -67,3 +93,24 @@ ConvexEnvelope Jarvis(std::vector<Vertex> S)
 	ConvexEnvelope envelope(P);
 	return envelope;
 }
+
+ConvexEnvelope GrahamScan(std::vector<Vertex> S)
+{
+	// Recherche du barycentre
+	Vertex barycenter = FindBarycenter(S);
+	
+	// Le choisir comme point d'origine
+	Vertex orig = barycenter;
+	
+	// Déterminer pour chaque point l'angle orienté avec l'origine
+	
+	
+	// Les trier dans le sens horaire + si égalité avec la distance à l'origine
+	// Former le polygone
+	// Supprimer les points non convexes
+
+
+	
+	ConvexEnvelope envelope(S);
+	return envelope;
+};
