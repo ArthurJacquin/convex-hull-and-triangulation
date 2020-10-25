@@ -21,6 +21,8 @@ struct Vertex
 	Vertex& operator*(int i) { x = x * i; y = y * i; z = z * i; return *this; }
 	Vertex& operator+(Vec3 v) { x = x + v.x; y = y + v.y; z = z + v.z; return *this; }
 
+	friend bool operator<(const Vertex v, const Vertex v2) { return v.x < v2.x; }
+
 	void setColor(Color color);
 	void setPositionUsingMouse(double x, double y);
 	void setNormal(Vec3 n);

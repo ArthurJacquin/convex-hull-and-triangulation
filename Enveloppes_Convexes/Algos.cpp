@@ -1,4 +1,5 @@
 #include "Algos.h"
+#include <algorithm>
 
 Vertex FindBarycenter(std::vector<Vertex> S)
 {
@@ -177,3 +178,21 @@ ConvexEnvelope GrahamScan(std::vector<Vertex> S)
 	ConvexEnvelope envelope(P);
 	return envelope;
 };
+
+std::vector<Tri> triangulateIncremental(std::vector<Vertex> S)
+{
+	vector<Vertex> sortPoints = S;
+	vector<Tri> triangulateTriTab;
+
+	//1 : sort vector by abscisse (utilise l'operator < dans Vertex.h)
+	std::sort(sortPoints.begin(), sortPoints.end());
+
+	//2 : création des triangles
+	for (int i = 0; i < sortPoints.size() - 1; i+=2)
+	{
+		Tri tri = Tri(&sortPoints[i], &sortPoints[i + 1], &sortPoints[i + 2]);
+		triangulateTriTab.push_back(tri);
+	}
+
+	return triangulateTriTab;
+}
