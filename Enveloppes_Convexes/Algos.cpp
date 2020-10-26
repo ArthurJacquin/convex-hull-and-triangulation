@@ -188,9 +188,9 @@ std::vector<Tri> triangulateIncremental(std::vector<Vertex> S)
 	std::sort(sortPoints.begin(), sortPoints.end());
 
 	//2 : création des triangles
-	for (int i = 0; i < sortPoints.size() - 1; i+=2)
+	for (int i = 0; i < sortPoints.size() - 2; i+=1)
 	{
-		Tri tri = Tri(&sortPoints[i], &sortPoints[i + 1], &sortPoints[i + 2]);
+		Tri tri = Tri(sortPoints[i], sortPoints[i + 1], sortPoints[i + 2]);
 		triangulateTriTab.push_back(tri);
 	}
 

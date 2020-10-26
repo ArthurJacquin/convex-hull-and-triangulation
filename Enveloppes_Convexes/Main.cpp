@@ -48,6 +48,7 @@ Input input;
 std::vector<Vertex> pointsCloud;
 std::vector<ConvexEnvelope> convexEnv;
 std::vector<Mesh> meshes;
+std::vector<Tri> triTab;
 
 bool movingPoint;
 int selectedPointId;
@@ -201,6 +202,16 @@ void Display(GLFWwindow* window)
 		glDrawArrays(GL_LINE_LOOP, 0, convexEnv[i].GetPointsCount());
 	}
 
+	//Draw triangulation
+	for (int i = 0; i < triTab.size(); i++)
+	{
+		VBOCurrent = triTab[i].GetVBO();
+		updateVBO();
+
+		glCullFace(GL_FRONT_AND_BACK);
+		glDrawArrays(GL_LINE_LOOP, 0, 3);
+	}
+
 	//Draw Meshes
 	for (int i = 0; i < meshes.size(); ++i)
 	{
@@ -281,8 +292,18 @@ void displayGUI()
 	}
 
 	ImGui::Separator();
+	ImGui::Text("            Triangulation    ");
+	ImGui::Text("");
+	if (ImGui::Button("Triangulation quelconque"))
+	{
+		triTab = triangulateIncremental(pointsCloud);
+		std::cerr << triTab.size() << std::endl;
+	}
+
+	ImGui::Separator();
 	ImGui::Text("            Visualizer    ");
 	ImGui::Text("");
+
 
 	if (ImGui::Button("Wireframe"))
 	{

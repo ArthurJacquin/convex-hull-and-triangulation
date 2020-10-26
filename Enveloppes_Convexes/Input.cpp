@@ -84,14 +84,14 @@ void Input::mouse_button_callback(GLFWwindow* window, int button, int action, in
 
 void Input::keyboard_button_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_ENTER && action == GLFW_PRESS || key == GLFW_KEY_KP_ENTER && action == GLFW_PRESS) // Finish shape
+	/*if (key == GLFW_KEY_ENTER && action == GLFW_PRESS || key == GLFW_KEY_KP_ENTER && action == GLFW_PRESS) // Finish shape
 	{
 		if (pointsCloud.size() > 2)
 		{
 			//TODO : Create shape
 			pointsCloud.clear();
 		}
-	}
+	}*/
 
 	if (key == GLFW_KEY_LEFT_ALT && action == GLFW_PRESS) // Enable point movement
 	{
