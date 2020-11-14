@@ -2,12 +2,14 @@
 #include <iostream>
 #include "Color.h"
 #include "Vec3.h"
+#include <vector>
 
 struct Vertex
 {
 	double x, y, z;
 	float r, g, b;
 	Vec3 normal;
+	std::vector<Vertex> neighborVertices;
 
 	Vertex();
 	Vertex(Color col);
@@ -21,11 +23,14 @@ struct Vertex
 	Vertex& operator*(int i) { x = x * i; y = y * i; z = z * i; return *this; }
 	Vertex& operator+(Vec3 v) { x = x + v.x; y = y + v.y; z = z + v.z; return *this; }
 
-	friend bool operator<(const Vertex v, const Vertex v2) { return v.x < v2.x; }
+	friend bool operator<(const Vertex v, const Vertex v2) { if (v.x == v2.x) return v.y < v2.y; else return v.x < v2.x; }
 
 	void setColor(Color color);
 	void setPositionUsingMouse(double x, double y);
 	void setNormal(Vec3 n);
+	float Distance(Vertex v2) { return sqrt(pow((v2.x - x), 2) + pow((v2.y - y),2) + pow((v2.z - z), 2)); }
 
 	Vec3 GetPos()const { return Vec3(x, y, z); }
+	std::vector<Vertex> getNeighborVertices() const { return neighborVertices; }
+	void addNeighborVertices(Vertex v) { neighborVertices.push_back(v); }
 };

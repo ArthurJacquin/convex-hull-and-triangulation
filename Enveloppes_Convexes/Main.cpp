@@ -49,6 +49,7 @@ std::vector<Vertex> pointsCloud;
 std::vector<ConvexEnvelope> convexEnv;
 std::vector<Mesh> meshes;
 std::vector<Tri> triTab;
+std::vector<Vertex> aretes;
 
 bool movingPoint;
 int selectedPointId;
@@ -297,7 +298,10 @@ void displayGUI()
 	if (ImGui::Button("Triangulation quelconque"))
 	{
 		triTab = triangulateIncremental(pointsCloud);
-		std::cerr << triTab.size() << std::endl;
+	}
+	if (ImGui::Button("Triangulation Delaunay"))
+	{
+		triTab = triangulateDelaunay(pointsCloud);
 	}
 
 	ImGui::Separator();
@@ -323,7 +327,17 @@ void displayGUI()
 		enable3DViewport = !enable3DViewport;
 		updateVBO();
 	}
-
+	ImGui::Text("");
+	ImGui::Separator();
+	ImGui::Text("");
+	//clear all 
+	if (ImGui::Button("Delete"))
+	{
+		pointsCloud.clear();
+		convexEnv.clear();
+		meshes.clear();
+		triTab.clear();
+	}
 
 	ImGui::End();
 

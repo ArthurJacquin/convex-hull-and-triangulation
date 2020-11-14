@@ -1,5 +1,6 @@
 #include "Algos.h"
 #include <algorithm>
+#include "Vec3.h"
 
 Vertex FindBarycenter(std::vector<Vertex> S)
 {
@@ -179,20 +180,119 @@ ConvexEnvelope GrahamScan(std::vector<Vertex> S)
 	return envelope;
 };
 
+Vertex nearestVertex(Vertex v, std::vector<Vertex> tabV)
+{
+	Vertex vNear;
+	float min = 10000.f;
+	float distance = 5000.f;
+	for (int i = 0; i < tabV.size(); ++i)
+	{
+		if (tabV[i] != v)
+		{
+
+			distance = v.Distance(tabV[i]);
+
+			if (distance < min)
+			{
+				min = distance;
+				vNear = tabV[i];
+			}
+		}
+	}
+
+	return vNear;
+}
+
 std::vector<Tri> triangulateIncremental(std::vector<Vertex> S)
 {
-	vector<Vertex> sortPoints = S;
+	//vector<Vertex> sortPoints = S;
+	//									P               Q              R
+	vector<Vertex> sortPoints{ Vertex(0, 0, 0), Vertex(0, 0.3, 0), Vertex(0.5, 0, 0), Vertex(0,- 0.6, 0), Vertex(-0.6, 0, 0) };
 	vector<Tri> triangulateTriTab;
+	vector<Vertex> vertexEnveloppeConvexe;
 
 	//1 : sort vector by abscisse (utilise l'operator < dans Vertex.h)
 	std::sort(sortPoints.begin(), sortPoints.end());
 
-	//2 : création des triangles
-	for (int i = 0; i < sortPoints.size() - 2; i+=1)
+	//2 : enveloppe convexe
+	vertexEnveloppeConvexe = GrahamScan(sortPoints).GetVertices();
+
+	//3 : tableau de vertex interieur
+	for (int i = 0; i < sortPoints.size(); i++)
 	{
-		Tri tri = Tri(sortPoints[i], sortPoints[i + 1], sortPoints[i + 2]);
-		triangulateTriTab.push_back(tri);
+		if (std::find(vertexEnveloppeConvexe.begin(), vertexEnveloppeConvexe.end(), sortPoints[i]) != vertexEnveloppeConvexe.end())
+		{
+
+		}
+		else
+		{
+			Vertex neighor;
+			//rajout du point le plus proche dans le vertex 
+			sortPoints[i].addNeighborVertices(nearestVertex(sortPoints[i], sortPoints));
+			for (int j = 0; j < sortPoints.size(); j++)
+			{
+				if (sortPoints[j] != sortPoints[i] && sortPoints[j] != sortPoints[i].getNeighborVertices()[0])
+				{
+					Vec3 PQ = sortPoints[i].getNeighborVertices()[0].GetPos() - sortPoints[i].GetPos();
+					//entre P et R
+					Vec3 Pj = sortPoints[j].GetPos() - sortPoints[i].GetPos();
+					float determinant = PQ.dot(Pj);
+
+					//sûr qu'on tourne vers la droite
+					if (determinant < 0)
+					{
+						float cosAngle = 1.f;
+						//RP
+						Vec3 jP = sortPoints[i].GetPos() - sortPoints[j].GetPos();
+						//RQ
+						Vec3 jQ = sortPoints[i].getNeighborVertices()[0].GetPos() - sortPoints[j].GetPos();
+						if(cos(jP.Angle(jQ)) < cosAngle);
+						{
+							cosAngle = cos(jP.Angle(jQ));
+							neighor = sortPoints[j];
+						}
+					}
+				}
+			}
+			sortPoints[i].addNeighborVertices(neighor);
+		}
+	}
+
+	for (int i = 0; i < sortPoints.size(); ++i)
+	{
+		int neighborSize = sortPoints[i].getNeighborVertices().size();
+		for (int j = 0; j < neighborSize; ++j)
+		{
+			triangulateTriTab.push_back(Tri(sortPoints[i], sortPoints[i].getNeighborVertices()[j % neighborSize], sortPoints[i].getNeighborVertices()[(j + 1) % neighborSize]));
+		}
 	}
 
 	return triangulateTriTab;
+}
+
+//Check if point is in triangle
+float sign(Vertex p1, Vertex p2, Vertex p3)
+{
+	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+bool PointInTriangle(Vertex pt, Vertex v1, Vertex v2, Vertex v3)
+{
+	float d1, d2, d3;
+	bool has_neg, has_pos;
+
+	d1 = sign(pt, v1, v2);
+	d2 = sign(pt, v2, v3);
+	d3 = sign(pt, v3, v1);
+
+	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+	return !(has_neg && has_pos);
+}
+
+//Delaunay algorithm
+std::vector<Tri> triangulateDelaunay(std::vector<Vertex> S)
+{
+	return std::vector<Tri>();
 }

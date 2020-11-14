@@ -24,5 +24,6 @@ public:
 	//Getters
 	uint32_t GetVBO()const { return VBO; }
 	int GetPointsCount()const { return points.size(); }
+	vector<Vertex> GetVertices() const { return points; }
 
 };
