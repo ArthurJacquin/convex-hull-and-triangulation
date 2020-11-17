@@ -26,7 +26,7 @@ Vertex FindBarycenter(std::vector<Vertex> S)
 	return Vertex(avg_x, avg_y, avg_z);
 }
 
-ConvexEnvelope Jarvis(std::vector<Vertex> S)
+ConvexEnvelope Jarvis(std::vector<Vertex>& S)
 {
 	int i0 = 0;
 	float xmin = S[i0].x;
@@ -44,15 +44,15 @@ ConvexEnvelope Jarvis(std::vector<Vertex> S)
 	}
 
 	Vec3 v(0, -1, 0);	//Initialisation du vecteur directeur
-	std::vector<Vertex> P;	// Polygone de l'enveloppe convexe
+	std::vector<Vertex*> P;	// Polygone de l'enveloppe convexe
 	int i = i0; // Indice du 1e sommet
 	int j = 0;
 
 	do
 	{
 		//Ajout du point
-		Vertex vert = S[i];
-		vert.setColor(Color(1.0f, 0.0f, 0.0f));
+		Vertex* vert = &S[i];
+		vert->setColor(Color(1.0f, 0.0f, 0.0f));
 		P.push_back(vert);
 
 		//Initialisation des min avec le 1er point d'indice != de i
@@ -94,7 +94,7 @@ ConvexEnvelope Jarvis(std::vector<Vertex> S)
 	return envelope;
 }
 
-ConvexEnvelope GrahamScan(std::vector<Vertex> S)
+ConvexEnvelope GrahamScan(std::vector<Vertex>& S)
 {
 	size_t const size = S.size();
 	size_t i = 0;
@@ -105,8 +105,8 @@ ConvexEnvelope GrahamScan(std::vector<Vertex> S)
 	Vertex const B = FindBarycenter(S); // barycentre
 	
 	// Polygone de l'enveloppe convexe
-	std::vector<Vertex> P;
-	std::vector<Vertex> tmp = S;
+	std::vector<Vertex*> P;
+	std::vector<Vertex>& tmp = S;
 
 	float angle_min = 999999999.0f;
 	float dist_min = 999999999.0f;
@@ -135,7 +135,7 @@ ConvexEnvelope GrahamScan(std::vector<Vertex> S)
 		}
 
 		// ajout du minimum et suppression de tmp
-		P.push_back(tmp[min]);
+		P.push_back(&tmp[min]);
 		tmp.erase(tmp.begin() + min);
 
 		// reset des valeurs
@@ -154,8 +154,8 @@ ConvexEnvelope GrahamScan(std::vector<Vertex> S)
 		j = i == 0 ? P.size() - 1 : i - 1; // i - 1
 		k = (i + 1) % P.size(); // i + 1
 		
-		Vec3 PiPj = P[j].GetPos() - P[i].GetPos();
-		Vec3 PiPk = P[k].GetPos() - P[i].GetPos();
+		Vec3 PiPj = P[j]->GetPos() - P[i]->GetPos();
+		Vec3 PiPk = P[k]->GetPos() - P[i]->GetPos();
 		float angle = PiPj.AngleClockwise(PiPk);
 		if (angle < 0)
 		{
@@ -203,60 +203,66 @@ Vertex nearestVertex(Vertex v, std::vector<Vertex> tabV)
 	return vNear;
 }
 
-std::vector<Tri> triangulateIncremental(std::vector<Vertex> S)
+std::vector<Tri> triangulateIncremental(std::vector<Vertex>& S)
 {
-	//vector<Vertex> sortPoints = S;
+	vector<Vertex> sortPoints = S;
 	//									P               Q              R
-	vector<Vertex> sortPoints{ Vertex(0, 0, 0), Vertex(0, 0.3, 0), Vertex(0.5, 0, 0), Vertex(0,- 0.6, 0), Vertex(-0.6, 0, 0) };
+	//vector<Vertex> sortPoints{ Vertex(0, 0, 0), Vertex(0, 0.3, 0), Vertex(0.5, 0, 0), Vertex(0,- 0.6, 0), Vertex(-0.6, 0, 0) };
 	vector<Tri> triangulateTriTab;
-	vector<Vertex> vertexEnveloppeConvexe;
+	vector<Vertex*> vertexEnveloppeConvexe;
+	vector<Vertex*> vertexInterior;
 
 	//1 : sort vector by abscisse (utilise l'operator < dans Vertex.h)
-	std::sort(sortPoints.begin(), sortPoints.end());
-
+	std::sort(S.begin(), S.end());
+	
 	//2 : enveloppe convexe
-	vertexEnveloppeConvexe = GrahamScan(sortPoints).GetVertices();
-
-	//3 : tableau de vertex interieur
-	for (int i = 0; i < sortPoints.size(); i++)
+	vertexEnveloppeConvexe = GrahamScan(S).GetVertices();
+	/*
+	//3 : remplir tableau de vertex interieur
+	for (int i = 0; i < S->size(); i++)
 	{
-		if (std::find(vertexEnveloppeConvexe.begin(), vertexEnveloppeConvexe.end(), sortPoints[i]) != vertexEnveloppeConvexe.end())
+		if (std::find(vertexEnveloppeConvexe->begin(), vertexEnveloppeConvexe->end(), S[i]) == vertexEnveloppeConvexe->end())
 		{
-
+			vertexInterior->push_back(S[i]);
 		}
-		else
-		{
-			Vertex neighor;
-			//rajout du point le plus proche dans le vertex 
-			sortPoints[i].addNeighborVertices(nearestVertex(sortPoints[i], sortPoints));
-			for (int j = 0; j < sortPoints.size(); j++)
-			{
-				if (sortPoints[j] != sortPoints[i] && sortPoints[j] != sortPoints[i].getNeighborVertices()[0])
-				{
-					Vec3 PQ = sortPoints[i].getNeighborVertices()[0].GetPos() - sortPoints[i].GetPos();
-					//entre P et R
-					Vec3 Pj = sortPoints[j].GetPos() - sortPoints[i].GetPos();
-					float determinant = PQ.dot(Pj);
+	}
 
-					//sûr qu'on tourne vers la droite
-					if (determinant < 0)
+	//4 : relier les points de vertexInterior
+	Vertex neighor;
+	for (int i = 0; i < vertexInterior.size(); i++)
+	{
+		//rajout du point le plus proche dans le vertex 
+		vertexInterior[i].addNeighborVertices(nearestVertex(sortPoints[i], sortPoints));
+
+		float cosAngle = 1.f;
+
+		for (int j = 0; j < vertexInterior.size(); j++)
+		{
+			if (vertexInterior[j] != vertexInterior[i] && vertexInterior[j] != vertexInterior[i].getNeighborVertices()[0])
+			{
+				Vec3 PQ = vertexInterior[i].getNeighborVertices()[0].GetPos() - vertexInterior[i].GetPos();
+				//entre P et R
+				Vec3 Pj = vertexInterior[j].GetPos() - vertexInterior[i].GetPos();
+				float determinant = PQ.getDeterminant(Pj);
+
+				//sûr qu'on tourne vers la droite
+				if (determinant < 0)
+				{
+					//RP
+					Vec3 jP = vertexInterior[i].GetPos() - vertexInterior[j].GetPos();
+					//RQ
+					Vec3 jQ = vertexInterior[i].getNeighborVertices()[0].GetPos() - vertexInterior[j].GetPos();
+					if (cos(jP.Angle(jQ)) < cosAngle);
 					{
-						float cosAngle = 1.f;
-						//RP
-						Vec3 jP = sortPoints[i].GetPos() - sortPoints[j].GetPos();
-						//RQ
-						Vec3 jQ = sortPoints[i].getNeighborVertices()[0].GetPos() - sortPoints[j].GetPos();
-						if(cos(jP.Angle(jQ)) < cosAngle);
-						{
-							cosAngle = cos(jP.Angle(jQ));
-							neighor = sortPoints[j];
-						}
+						cosAngle = cos(jP.Angle(jQ));
+						neighor = vertexInterior[j];
 					}
 				}
 			}
-			sortPoints[i].addNeighborVertices(neighor);
 		}
+		vertexInterior[i].addNeighborVertices(neighor);
 	}
+
 
 	for (int i = 0; i < sortPoints.size(); ++i)
 	{
@@ -266,7 +272,7 @@ std::vector<Tri> triangulateIncremental(std::vector<Vertex> S)
 			triangulateTriTab.push_back(Tri(sortPoints[i], sortPoints[i].getNeighborVertices()[j % neighborSize], sortPoints[i].getNeighborVertices()[(j + 1) % neighborSize]));
 		}
 	}
-
+	*/
 	return triangulateTriTab;
 }
 
@@ -292,7 +298,7 @@ bool PointInTriangle(Vertex pt, Vertex v1, Vertex v2, Vertex v3)
 }
 
 //Delaunay algorithm
-std::vector<Tri> triangulateDelaunay(std::vector<Vertex> S)
+std::vector<Tri> triangulateDelaunay(std::vector<Vertex>& S)
 {
 	return std::vector<Tri>();
 }

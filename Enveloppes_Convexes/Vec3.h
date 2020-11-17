@@ -134,6 +134,10 @@ public:
 		return *this;
 	}
 
+	float getDeterminant(const Vec3 o) {
+		return x * o.y - y * o.x;
+	}
+
 	// Other functions
 
 	// Length of vector
@@ -172,4 +176,5 @@ public:
 		float alpha = atan2(det, this->dot(b));
 		return alpha;
 	}
+
 };
