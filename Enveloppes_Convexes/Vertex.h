@@ -9,7 +9,7 @@ struct Vertex
 	double x, y, z;
 	float r, g, b;
 	Vec3 normal;
-	std::vector<Vertex> neighborVertices;
+	std::vector<Vertex*> neighborVertices;
 
 	Vertex();
 	Vertex(Color col);
@@ -31,6 +31,6 @@ struct Vertex
 	float Distance(Vertex v2) { return sqrt(pow((v2.x - x), 2) + pow((v2.y - y),2) + pow((v2.z - z), 2)); }
 
 	Vec3 GetPos()const { return Vec3(x, y, z); }
-	std::vector<Vertex> getNeighborVertices() const { return neighborVertices; }
-	void addNeighborVertices(Vertex v) { neighborVertices.push_back(v); }
+	std::vector<Vertex*> getNeighborVertices() const { return neighborVertices; }
+	void addNeighborVertices(Vertex* v) { neighborVertices.push_back(v); }
 };

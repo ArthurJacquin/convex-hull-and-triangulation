@@ -203,9 +203,13 @@ Vertex nearestVertex(Vertex v, std::vector<Vertex> tabV)
 	return vNear;
 }
 
+bool isVisible(Vertex v, std::vector<Vertex> tabV)
+{
+	return true;
+}
+
 std::vector<Tri> triangulateIncremental(std::vector<Vertex>& S)
 {
-	vector<Vertex> sortPoints = S;
 	//									P               Q              R
 	//vector<Vertex> sortPoints{ Vertex(0, 0, 0), Vertex(0, 0.3, 0), Vertex(0.5, 0, 0), Vertex(0,- 0.6, 0), Vertex(-0.6, 0, 0) };
 	vector<Tri> triangulateTriTab;
@@ -216,42 +220,55 @@ std::vector<Tri> triangulateIncremental(std::vector<Vertex>& S)
 	std::sort(S.begin(), S.end());
 	
 	//2 : enveloppe convexe
-	vertexEnveloppeConvexe = GrahamScan(S).GetVertices();
-	/*
+	vertexEnveloppeConvexe = Jarvis(S).GetPoints();
+	
 	//3 : remplir tableau de vertex interieur
-	for (int i = 0; i < S->size(); i++)
+	for (int i = 0; i < S.size(); i++)
 	{
-		if (std::find(vertexEnveloppeConvexe->begin(), vertexEnveloppeConvexe->end(), S[i]) == vertexEnveloppeConvexe->end())
+		bool dedans = false;
+		for(int j = 0; j < vertexEnveloppeConvexe.size(); j++)
 		{
-			vertexInterior->push_back(S[i]);
+			if (&S[i] == vertexEnveloppeConvexe[j])
+				dedans = true;
+				
 		}
+		if(dedans == false)
+			vertexInterior.push_back(&S[i]);
 	}
 
-	//4 : relier les points de vertexInterior
-	Vertex neighor;
+	//4 : faire un premier triangle
+	if (S.size() > 2)
+		triangulateTriTab.push_back(Tri(&S[0], &S[1], &S[2]));
+	else
+		std::cerr << "Pas assez de points pour faire un triangle ! " << std::endl;
+
+
+
+	/*
+	Vertex* neighor;
 	for (int i = 0; i < vertexInterior.size(); i++)
 	{
 		//rajout du point le plus proche dans le vertex 
-		vertexInterior[i].addNeighborVertices(nearestVertex(sortPoints[i], sortPoints));
+		vertexInterior[i]->addNeighborVertices(&nearestVertex(sortPoints[i], sortPoints));
 
 		float cosAngle = 1.f;
 
 		for (int j = 0; j < vertexInterior.size(); j++)
 		{
-			if (vertexInterior[j] != vertexInterior[i] && vertexInterior[j] != vertexInterior[i].getNeighborVertices()[0])
+			if (vertexInterior[j] != vertexInterior[i] && vertexInterior[j] != vertexInterior[i]->getNeighborVertices()[0])
 			{
-				Vec3 PQ = vertexInterior[i].getNeighborVertices()[0].GetPos() - vertexInterior[i].GetPos();
+				Vec3 PQ = vertexInterior[i]->getNeighborVertices()[0]->GetPos() - vertexInterior[i]->GetPos();
 				//entre P et R
-				Vec3 Pj = vertexInterior[j].GetPos() - vertexInterior[i].GetPos();
+				Vec3 Pj = vertexInterior[j]->GetPos() - vertexInterior[i]->GetPos();
 				float determinant = PQ.getDeterminant(Pj);
 
 				//sûr qu'on tourne vers la droite
 				if (determinant < 0)
 				{
 					//RP
-					Vec3 jP = vertexInterior[i].GetPos() - vertexInterior[j].GetPos();
+					Vec3 jP = vertexInterior[i]->GetPos() - vertexInterior[j]->GetPos();
 					//RQ
-					Vec3 jQ = vertexInterior[i].getNeighborVertices()[0].GetPos() - vertexInterior[j].GetPos();
+					Vec3 jQ = vertexInterior[i]->getNeighborVertices()[0]->GetPos() - vertexInterior[j]->GetPos();
 					if (cos(jP.Angle(jQ)) < cosAngle);
 					{
 						cosAngle = cos(jP.Angle(jQ));
@@ -260,16 +277,16 @@ std::vector<Tri> triangulateIncremental(std::vector<Vertex>& S)
 				}
 			}
 		}
-		vertexInterior[i].addNeighborVertices(neighor);
+		vertexInterior[i]->addNeighborVertices(neighor);
 	}
-
-
+	*/
+	/*
 	for (int i = 0; i < sortPoints.size(); ++i)
 	{
 		int neighborSize = sortPoints[i].getNeighborVertices().size();
 		for (int j = 0; j < neighborSize; ++j)
 		{
-			triangulateTriTab.push_back(Tri(sortPoints[i], sortPoints[i].getNeighborVertices()[j % neighborSize], sortPoints[i].getNeighborVertices()[(j + 1) % neighborSize]));
+			triangulateTriTab.push_back(Tri(&sortPoints[i], sortPoints[i].getNeighborVertices()[j % neighborSize], sortPoints[i].getNeighborVertices()[(j + 1) % neighborSize]));
 		}
 	}
 	*/

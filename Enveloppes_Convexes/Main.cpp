@@ -297,11 +297,11 @@ void displayGUI()
 	ImGui::Text("");
 	if (ImGui::Button("Triangulation quelconque"))
 	{
-		//triTab = triangulateIncremental(pointsCloud);
+		triTab = triangulateIncremental(pointsCloud);
 	}
 	if (ImGui::Button("Triangulation Delaunay"))
 	{
-		//triTab = triangulateDelaunay(pointsCloud);
+		triTab = triangulateDelaunay(pointsCloud);
 	}
 
 	ImGui::Separator();

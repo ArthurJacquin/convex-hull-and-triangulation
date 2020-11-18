@@ -153,6 +153,7 @@
     <ClInclude Include="..\common\GLShader.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="ConvexEnvelope.h" />
+    <ClInclude Include="Edge.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mesh.h" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Algos.h" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="ConvexEnvelope.cpp" />
+    <ClCompile Include="Edge.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Matrix.cpp" />
