@@ -212,7 +212,7 @@ bool isVisible(Vertex v, Edge e)
 	//std::cerr << "produit scalaire entre : " << e.getEdgePoints()[0]->GetPos().x << "/" << e.getEdgePoints()[1]->GetPos().x << " et " << v1.x << "/" << v1.y << "====>" << dot << std::endl;
 	//std::cerr << "la normale :" << e.getNormale() << std::endl;
 
-	if (dot > 0)
+	if (dot > FLT_EPSILON)
 	{
 		return true;
 	}
@@ -220,41 +220,26 @@ bool isVisible(Vertex v, Edge e)
 		return false;
 }
 
+void checkIfEdgeExist(Edge e, vector<Edge>& edges)
+{
+	auto it = std::find(edges.begin(), edges.end(), e);
+	if (it != edges.end())
+		it->setInterior();
+	else
+		edges.push_back(e);
+}
+
 std::vector<Edge> triangulateIncremental(std::vector<Vertex>& S)
 {
 	vector<Vertex> testPoints{ Vertex(0, 0, 0), Vertex(-0.2, 0.5, 0), Vertex(-0.5, -0.2, 0), Vertex(0.5, 0.5, 0)};
 	//S = testPoints;
 	vector<Tri> triangulateTriTab;
-	vector<Vertex*> vertexEnveloppeConvexe;
-	vector<Vertex*> vertexInterior;
 	vector<Edge> edgeTriTab;
 
 	//1 : sort vector by abscisse (utilise l'operator < dans Vertex.h)
 	std::sort(S.begin(), S.end());
-	
-	std::cerr << "--------------" << std::endl;
-	for(int i = 0; i < S.size(); i++)
-		std::cerr << S[i] << std::endl;
-	std::cerr << "--------------" << std::endl;
 
-	//2 : enveloppe convexe
-	vertexEnveloppeConvexe = Jarvis(S).GetPoints();
-	
-	//3 : remplir tableau de vertex interieur
-	for (int i = 0; i < S.size(); i++)
-	{
-		bool dedans = false;
-		for(int j = 0; j < vertexEnveloppeConvexe.size(); j++)
-		{
-			if (&S[i] == vertexEnveloppeConvexe[j])
-				dedans = true;
-				
-		}
-		if(dedans == false)
-			vertexInterior.push_back(&S[i]);
-	}
-
-	//4 : faire un premier triangle
+	//2 : faire un premier triangle
 	if (S.size() > 2)
 	{
 		triangulateTriTab.push_back(Tri(&S[0], &S[1], &S[2]));
@@ -267,7 +252,7 @@ std::vector<Edge> triangulateIncremental(std::vector<Vertex>& S)
 	else
 		std::cerr << "Pas assez de points pour faire un triangle ! " << std::endl;
 
-	//5 : parcours des points suivants de S (sorted)
+	//3 : parcours des points suivants de S (sorted)
 	for (int p = 3; p < S.size(); p++)
 	{
 		//check visibilité par rapport à tous les edges exterior
@@ -282,8 +267,9 @@ std::vector<Edge> triangulateIncremental(std::vector<Vertex>& S)
 				//							&S[p], 
 				//							triangulateTriTab[t].getEdge()[e].getEdgePoints()[1]));
 
-				edgeTriTab.push_back(Edge(edgeTriTab[e].getEdgePoints()[0], &S[p]));
-				edgeTriTab.push_back(Edge(&S[p], edgeTriTab[e].getEdgePoints()[1]));
+				checkIfEdgeExist(Edge(edgeTriTab[e].getEdgePoints()[0], &S[p]), edgeTriTab);
+				checkIfEdgeExist(Edge(&S[p], edgeTriTab[e].getEdgePoints()[1]), edgeTriTab);
+
 				//triangulateTriTab[triangulateTriTab.size() - 1].getEdge()[2].setInterior();
 				//l'edge n'est plus un bord
 				edgeTriTab[e].setInterior();
@@ -292,52 +278,6 @@ std::vector<Edge> triangulateIncremental(std::vector<Vertex>& S)
 		}
 	}
 
-	/*
-	Vertex* neighor;
-	for (int i = 0; i < vertexInterior.size(); i++)
-	{
-		//rajout du point le plus proche dans le vertex 
-		vertexInterior[i]->addNeighborVertices(&nearestVertex(sortPoints[i], sortPoints));
-
-		float cosAngle = 1.f;
-
-		for (int j = 0; j < vertexInterior.size(); j++)
-		{
-			if (vertexInterior[j] != vertexInterior[i] && vertexInterior[j] != vertexInterior[i]->getNeighborVertices()[0])
-			{
-				Vec3 PQ = vertexInterior[i]->getNeighborVertices()[0]->GetPos() - vertexInterior[i]->GetPos();
-				//entre P et R
-				Vec3 Pj = vertexInterior[j]->GetPos() - vertexInterior[i]->GetPos();
-				float determinant = PQ.getDeterminant(Pj);
-
-				//sûr qu'on tourne vers la droite
-				if (determinant < 0)
-				{
-					//RP
-					Vec3 jP = vertexInterior[i]->GetPos() - vertexInterior[j]->GetPos();
-					//RQ
-					Vec3 jQ = vertexInterior[i]->getNeighborVertices()[0]->GetPos() - vertexInterior[j]->GetPos();
-					if (cos(jP.Angle(jQ)) < cosAngle);
-					{
-						cosAngle = cos(jP.Angle(jQ));
-						neighor = vertexInterior[j];
-					}
-				}
-			}
-		}
-		vertexInterior[i]->addNeighborVertices(neighor);
-	}
-	*/
-	/*
-	for (int i = 0; i < sortPoints.size(); ++i)
-	{
-		int neighborSize = sortPoints[i].getNeighborVertices().size();
-		for (int j = 0; j < neighborSize; ++j)
-		{
-			triangulateTriTab.push_back(Tri(&sortPoints[i], sortPoints[i].getNeighborVertices()[j % neighborSize], sortPoints[i].getNeighborVertices()[(j + 1) % neighborSize]));
-		}
-	}
-	*/
 	return edgeTriTab;
 }
 

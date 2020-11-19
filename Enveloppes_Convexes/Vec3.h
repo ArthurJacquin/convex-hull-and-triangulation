@@ -51,6 +51,11 @@ public:
 		return x == other.x && y == other.y && z == other.z;
 	}
 
+	//Inequality
+	bool operator!=(const Vec3& other) const {
+		return !(*this == other);
+	}
+
 	// Addition
 	Vec3 operator+(const Vec3& o) {
 		return Vec3(x + o.x, y + o.y, z + o.z);
