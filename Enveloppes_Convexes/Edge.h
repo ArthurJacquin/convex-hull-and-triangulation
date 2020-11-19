@@ -17,6 +17,6 @@ public:
 	bool getSide() const { return exterior; }
 	Vec3 getNormale() const { return normale; }
 
-	void setSide(bool b) { exterior = b; }
+	void setInterior() { exterior = false; }
 	void reCalculateNormale() { normale = Vec3(edgePoints[1]->x - edgePoints[0]->x, -(edgePoints[1]->y - edgePoints[0]->y), 0); }
 };
