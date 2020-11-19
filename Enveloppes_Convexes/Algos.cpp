@@ -220,13 +220,14 @@ bool isVisible(Vertex v, Edge e)
 		return false;
 }
 
-std::vector<Tri> triangulateIncremental(std::vector<Vertex>& S)
+std::vector<Edge> triangulateIncremental(std::vector<Vertex>& S)
 {
 	vector<Vertex> testPoints{ Vertex(0, 0, 0), Vertex(-0.2, 0.5, 0), Vertex(-0.5, -0.2, 0), Vertex(0.5, 0.5, 0)};
 	//S = testPoints;
 	vector<Tri> triangulateTriTab;
 	vector<Vertex*> vertexEnveloppeConvexe;
 	vector<Vertex*> vertexInterior;
+	vector<Edge> edgeTriTab;
 
 	//1 : sort vector by abscisse (utilise l'operator < dans Vertex.h)
 	std::sort(S.begin(), S.end());
@@ -255,31 +256,38 @@ std::vector<Tri> triangulateIncremental(std::vector<Vertex>& S)
 
 	//4 : faire un premier triangle
 	if (S.size() > 2)
+	{
 		triangulateTriTab.push_back(Tri(&S[0], &S[1], &S[2]));
+
+		for (int i = 0; i < 3; i++)
+		{
+			edgeTriTab.push_back(triangulateTriTab[0].getEdge()[i]);
+		}
+	}
 	else
 		std::cerr << "Pas assez de points pour faire un triangle ! " << std::endl;
 
 	//5 : parcours des points suivants de S (sorted)
 	for (int p = 3; p < S.size(); p++)
 	{
-		//check visibilité par rapport à tous les edges du triangle exterior
-		//parcours de tous les triangles
-		for (int t = 0; t < triangulateTriTab.size(); t++)
+		//check visibilité par rapport à tous les edges exterior
+		for (int e = 0; e < edgeTriTab.size(); e++)
 		{
-			//parcours de tous les edges du triangles
-			for (int e = 0; e < 3; e++)
+			//si le point est visible et que la normale de l'edge est extérieure
+			if (isVisible(S[p], edgeTriTab[e]) && edgeTriTab[e].getSide())
 			{
-				//si le point est visible et que la normale de l'edge est extérieure
-				if (isVisible(S[p], triangulateTriTab[t].getEdge()[e]) && triangulateTriTab[t].getEdge()[e].getSide())
-				{
-					std::cerr << S[p] << "visible par : " << triangulateTriTab[t].getEdge()[e].getEdgePoints()[0]->GetPos() << "|" << triangulateTriTab[t].getEdge()[e].getEdgePoints()[1]->GetPos() << std::endl;
-					//triangle avec le nouveau point
-					triangulateTriTab.push_back(Tri(triangulateTriTab[t].getEdge()[e].getEdgePoints()[0], 
-												&S[p], 
-												triangulateTriTab[t].getEdge()[e].getEdgePoints()[1]));
-					//l'edge n'est plus un bord
-					triangulateTriTab[t].getEdge()[e].setInterior();
-				}
+				//std::cerr << S[p] << "visible par : " << triangulateTriTab[t].getEdge()[e].getEdgePoints()[0]->GetPos() << "|" << triangulateTriTab[t].getEdge()[e].getEdgePoints()[1]->GetPos() << std::endl;
+				//triangle avec le nouveau point
+				//triangulateTriTab.push_back(Tri(triangulateTriTab[t].getEdge()[e].getEdgePoints()[0], 
+				//							&S[p], 
+				//							triangulateTriTab[t].getEdge()[e].getEdgePoints()[1]));
+
+				edgeTriTab.push_back(Edge(edgeTriTab[e].getEdgePoints()[0], &S[p]));
+				edgeTriTab.push_back(Edge(&S[p], edgeTriTab[e].getEdgePoints()[1]));
+				//triangulateTriTab[triangulateTriTab.size() - 1].getEdge()[2].setInterior();
+				//l'edge n'est plus un bord
+				edgeTriTab[e].setInterior();
+				std::cerr << "laboucle" << std::endl;
 			}
 		}
 	}
@@ -330,7 +338,7 @@ std::vector<Tri> triangulateIncremental(std::vector<Vertex>& S)
 		}
 	}
 	*/
-	return triangulateTriTab;
+	return edgeTriTab;
 }
 
 //Check if point is in triangle

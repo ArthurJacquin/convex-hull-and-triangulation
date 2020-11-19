@@ -48,7 +48,7 @@ Input input;
 std::vector<Vertex> pointsCloud;
 std::vector<ConvexEnvelope> convexEnv;
 std::vector<Mesh> meshes;
-std::vector<Tri> triTab;
+std::vector<Edge> edgeTab;
 std::vector<Vertex> aretes;
 
 bool movingPoint;
@@ -204,13 +204,13 @@ void Display(GLFWwindow* window)
 	}
 
 	//Draw triangulation
-	for (int i = 0; i < triTab.size(); i++)
+	for (int i = 0; i < edgeTab.size(); i++)
 	{
-		VBOCurrent = triTab[i].GetVBO();
+		VBOCurrent = edgeTab[i].GetVBO();
 		updateVBO();
 
 		glCullFace(GL_FRONT_AND_BACK);
-		glDrawArrays(GL_LINE_LOOP, 0, 3);
+		glDrawArrays(GL_LINES, 0, 2);
 	}
 
 	//Draw Meshes
@@ -297,11 +297,11 @@ void displayGUI()
 	ImGui::Text("");
 	if (ImGui::Button("Triangulation quelconque"))
 	{
-		triTab = triangulateIncremental(pointsCloud);
+		edgeTab = triangulateIncremental(pointsCloud);
 	}
 	if (ImGui::Button("Triangulation Delaunay"))
 	{
-		triTab = triangulateDelaunay(pointsCloud);
+		//edgeTab = triangulateDelaunay(pointsCloud);
 	}
 
 	ImGui::Separator();
@@ -336,7 +336,7 @@ void displayGUI()
 		pointsCloud.clear();
 		convexEnv.clear();
 		meshes.clear();
-		triTab.clear();
+		edgeTab.clear();
 	}
 
 	ImGui::End();
