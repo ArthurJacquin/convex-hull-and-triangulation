@@ -245,7 +245,7 @@ Triangulation triangulateIncremental(std::vector<Vertex>& S)
 
 		for (int i = 0; i < 3; i++)
 		{
-			edgeTriTab.push_back(*triangulateTriTab[0].getEdge()[i]);
+			edgeTriTab.push_back(triangulateTriTab[0].getEdge()[i]);
 		}
 	}
 	else

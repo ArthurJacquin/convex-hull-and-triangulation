@@ -11,7 +11,7 @@ private:
 	std::vector<Tri*> neighorTri;
 	std::vector<Vertex> bufferPts;
 
-	std::vector<Edge*> edge;
+	std::vector<Edge> edge;
 	//bool clockwise;
 
 	Vec3 center;
@@ -25,7 +25,7 @@ public:
 
 	const std::vector<Vertex*> getPoints() const { return points; }
 	const std::vector<Tri*> getNeighorTri() const { return neighorTri; }
-	std::vector<Edge*>& getEdge() { return edge; }
+	std::vector<Edge>& getEdge() { return edge; }
 	const Vec3 getCenter() const { return center; }
 	const float getRadius() const { return radius; }
 
