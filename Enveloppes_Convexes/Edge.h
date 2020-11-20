@@ -16,13 +16,11 @@ class Edge
 public:
 	Edge();
 	Edge(Vertex* v1, Vertex* v2);
-	Edge(const Edge& e);
 
 	std::vector<Vertex*>getEdgePoints() const { return edgePoints; }
 	bool getSide() const { return exterior; }
 	Vec3 getNormale() const { return normale; }
 
-	Edge& operator=(Edge e);
 	bool operator!=(const Edge e) { return !(*this == e); }
 	bool operator==(const Edge e)
 	{ 

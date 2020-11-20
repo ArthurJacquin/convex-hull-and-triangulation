@@ -22,25 +22,6 @@ Edge::Edge(Vertex* v1, Vertex* v2)
 	normale.normalise();
 }
 
-Edge::Edge(const Edge& e)
-{
-	*this = e;
-}
-
-Edge& Edge::operator=(Edge e)
-{
-	if (*this != e)
-	{
-		edgePoints = e.edgePoints;
-		exterior = e.exterior;
-		normale = e.normale;
-		bufferPts = e.bufferPts;
-		VBO = e.VBO;
-	}
-
-	return *this;
-}
-
 void Edge::updateBuffers()
 {
 	updateBufferPoints();
