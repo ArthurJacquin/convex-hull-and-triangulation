@@ -323,17 +323,44 @@ bool critereDelaunay(Tri t1, Tri t2)
 Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 {
 	Triangulation laTri = triangulateIncremental(S);
-	std::vector<Edge> arete = laTri.edge;
+	std::vector<Edge> edge = laTri.edge;
 	std::vector<Tri> tri = laTri.tri;
 
-	laTri.clear();
+	//laTri.clear();
 
 	//flipping d'arete
-	for (int i = 0; i < arete.size(); ++i)
+	for (int i = 0; i < edge.size(); ++i)
 	{
-		//parcours des triangles
-		//for(t = 0; t < )
-		//arete[i]
+		std::vector<int> indexTri;
+
+		//parcours des triangles pour trouver le triangle avec son double
+		for (int t = 0; t < tri.size(); t++)
+		{
+			for (int e = 0; e < tri[t].getEdge().size(); e++)
+			{
+				if (edge[i] == *tri[t].getEdge()[e])
+				{
+					indexTri.push_back(t);
+				}
+
+			}
+		}
+
+		if (indexTri.size() > 1)
+		{
+			//flipping d'arete
+			if (critereDelaunay(tri[indexTri[0]], tri[indexTri[1]]) == false)
+			{
+				Edge edge = Edge(tri[indexTri[0]].getPoints()[2], tri[indexTri[1]].getPoints()[1]);
+				laTri.edge.push_back(edge);
+				edge.getEdgePoints()[0]->setColor(Color(0, 1, 0));
+				edge.getEdgePoints()[1]->setColor(Color(0, 1, 0));
+
+				//Tri
+				//Tri
+			}
+		}
+
 	}
 
 
