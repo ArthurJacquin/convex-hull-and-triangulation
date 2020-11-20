@@ -11,12 +11,11 @@ private:
 	std::vector<Tri*> neighorTri;
 	std::vector<Vertex> bufferPts;
 
-	std::vector<Edge> edge;
+	std::vector<Edge*> edge;
 	//bool clockwise;
 
-	Vertex center;
+	Vec3 center;
 	float radius;
-
 
 	uint32_t VBO;
 
@@ -26,8 +25,8 @@ public:
 
 	const std::vector<Vertex*> getPoints() const { return points; }
 	const std::vector<Tri*> getNeighorTri() const { return neighorTri; }
-	std::vector<Edge>& getEdge() { return edge; }
-	const Vertex getCenter() const { return center; }
+	std::vector<Edge*>& getEdge() { return edge; }
+	const Vec3 getCenter() const { return center; }
 	const float getRadius() const { return radius; }
 
 	void setPoints(Vertex* p1, Vertex* p2, Vertex* p3) { points.push_back(p1);
@@ -36,5 +35,7 @@ public:
 	void updateBuffers();
 	uint32_t GetVBO()const { return VBO; }
 	void updateBufferPoints();
+
+	void cercleCirconscrit();
 
 };

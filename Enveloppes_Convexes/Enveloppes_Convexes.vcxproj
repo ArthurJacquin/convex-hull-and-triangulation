@@ -161,6 +161,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Tri.h" />
+    <ClInclude Include="Triangulation.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>

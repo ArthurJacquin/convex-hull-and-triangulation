@@ -35,6 +35,7 @@
 
 #include "Color.h"
 #include "Mesh.h"
+#include "Triangulation.h"
 
 const char* glsl_version = "#version 420";
 
@@ -48,8 +49,7 @@ Input input;
 std::vector<Vertex> pointsCloud;
 std::vector<ConvexEnvelope> convexEnv;
 std::vector<Mesh> meshes;
-std::vector<Edge> edgeTab;
-std::vector<Vertex> aretes;
+Triangulation triangulation;
 
 bool movingPoint;
 int selectedPointId;
@@ -204,9 +204,9 @@ void Display(GLFWwindow* window)
 	}
 
 	//Draw triangulation
-	for (int i = 0; i < edgeTab.size(); i++)
+	for (int i = 0; i < triangulation.edge.size(); i++)
 	{
-		VBOCurrent = edgeTab[i].GetVBO();
+		VBOCurrent = triangulation.edge[i].GetVBO();
 		updateVBO();
 
 		glCullFace(GL_FRONT_AND_BACK);
@@ -297,7 +297,7 @@ void displayGUI()
 	ImGui::Text("");
 	if (ImGui::Button("Triangulation quelconque"))
 	{
-		edgeTab = triangulateIncremental(pointsCloud);
+		triangulation = triangulateIncremental(pointsCloud);
 	}
 	if (ImGui::Button("Triangulation Delaunay"))
 	{
@@ -336,7 +336,7 @@ void displayGUI()
 		pointsCloud.clear();
 		convexEnv.clear();
 		meshes.clear();
-		edgeTab.clear();
+		triangulation.clear();
 	}
 
 	ImGui::End();

@@ -229,10 +229,9 @@ void checkIfEdgeExist(Edge e, vector<Edge>& edges)
 		edges.push_back(e);
 }
 
-std::vector<Edge> triangulateIncremental(std::vector<Vertex>& S)
+Triangulation triangulateIncremental(std::vector<Vertex>& S)
 {
-	vector<Vertex> testPoints{ Vertex(0, 0, 0), Vertex(-0.2, 0.5, 0), Vertex(-0.5, -0.2, 0), Vertex(0.5, 0.5, 0)};
-	//S = testPoints;
+	Triangulation laTri;
 	vector<Tri> triangulateTriTab;
 	vector<Edge> edgeTriTab;
 
@@ -246,7 +245,7 @@ std::vector<Edge> triangulateIncremental(std::vector<Vertex>& S)
 
 		for (int i = 0; i < 3; i++)
 		{
-			edgeTriTab.push_back(triangulateTriTab[0].getEdge()[i]);
+			edgeTriTab.push_back(*triangulateTriTab[0].getEdge()[i]);
 		}
 	}
 	else
@@ -261,24 +260,24 @@ std::vector<Edge> triangulateIncremental(std::vector<Vertex>& S)
 			//si le point est visible et que la normale de l'edge est extérieure
 			if (isVisible(S[p], edgeTriTab[e]) && edgeTriTab[e].getSide())
 			{
-				//std::cerr << S[p] << "visible par : " << triangulateTriTab[t].getEdge()[e].getEdgePoints()[0]->GetPos() << "|" << triangulateTriTab[t].getEdge()[e].getEdgePoints()[1]->GetPos() << std::endl;
 				//triangle avec le nouveau point
-				//triangulateTriTab.push_back(Tri(triangulateTriTab[t].getEdge()[e].getEdgePoints()[0], 
-				//							&S[p], 
-				//							triangulateTriTab[t].getEdge()[e].getEdgePoints()[1]));
+				triangulateTriTab.push_back(Tri(edgeTriTab[e].getEdgePoints()[0],
+											&S[p], 
+											edgeTriTab[e].getEdgePoints()[1]));
 
 				checkIfEdgeExist(Edge(edgeTriTab[e].getEdgePoints()[0], &S[p]), edgeTriTab);
 				checkIfEdgeExist(Edge(&S[p], edgeTriTab[e].getEdgePoints()[1]), edgeTriTab);
 
-				//triangulateTriTab[triangulateTriTab.size() - 1].getEdge()[2].setInterior();
 				//l'edge n'est plus un bord
 				edgeTriTab[e].setInterior();
-				std::cerr << "laboucle" << std::endl;
 			}
 		}
 	}
 
-	return edgeTriTab;
+	laTri.edge = edgeTriTab;
+	laTri.tri = triangulateTriTab;
+
+	return laTri;
 }
 
 //Check if point is in triangle
@@ -302,8 +301,41 @@ bool PointInTriangle(Vertex pt, Vertex v1, Vertex v2, Vertex v3)
 	return !(has_neg && has_pos);
 }
 
-//Delaunay algorithm
-std::vector<Tri> triangulateDelaunay(std::vector<Vertex>& S)
+//check si le troisième point est dans le cercle circonscrit
+bool critereDelaunay(Tri t1, Tri t2)
 {
-	return std::vector<Tri>();
+	bool exterior = false;
+
+	for (int i = 0; i < t2.getPoints().size(); i++)
+	{
+		float dist = (t2.getPoints()[i]->GetPos() - t1.getCenter()).magnitude();
+		if (dist > t1.getRadius())
+			exterior = true;
+	}
+
+	if (exterior)
+		return true;
+	else
+		return false;
+}
+
+//Delaunay algorithm
+Triangulation triangulateDelaunay(std::vector<Vertex>& S)
+{
+	Triangulation laTri = triangulateIncremental(S);
+	std::vector<Edge> arete = laTri.edge;
+	std::vector<Tri> tri = laTri.tri;
+
+	laTri.clear();
+
+	//flipping d'arete
+	for (int i = 0; i < arete.size(); ++i)
+	{
+		//parcours des triangles
+		//for(t = 0; t < )
+		//arete[i]
+	}
+
+
+	return laTri;
 }
