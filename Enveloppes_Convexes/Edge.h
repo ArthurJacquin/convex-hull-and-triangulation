@@ -18,7 +18,7 @@ public:
 	Edge(Vertex* v1, Vertex* v2);
 
 	std::vector<Vertex*>getEdgePoints() const { return edgePoints; }
-	bool getSide() const { return exterior; }
+	bool getExterior() const { return exterior; }
 	Vec3 getNormale() const { return normale; }
 
 	bool operator!=(const Edge e) { return !(*this == e); }
