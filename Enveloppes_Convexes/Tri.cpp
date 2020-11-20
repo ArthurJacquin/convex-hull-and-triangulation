@@ -48,9 +48,9 @@ Tri::Tri(Vertex* p1, Vertex* p2, Vertex* p3)
 		points.push_back(p3);
 
 		//les edges
-		edge.push_back(&Edge(p1, p2));
-		edge.push_back(&Edge(p2, p3));
-		edge.push_back(&Edge(p3, p1));
+		edge.push_back(Edge(p1, p2));
+		edge.push_back(Edge(p2, p3));
+		edge.push_back(Edge(p3, p1));
 	}
 	else
 	{
@@ -58,9 +58,9 @@ Tri::Tri(Vertex* p1, Vertex* p2, Vertex* p3)
 		points.push_back(p2);
 
 		//les edges
-		edge.push_back(&Edge(p1, p3));
-		edge.push_back(&Edge(p3, p2));
-		edge.push_back(&Edge(p2, p1));
+		edge.push_back(Edge(p1, p3));
+		edge.push_back(Edge(p3, p2));
+		edge.push_back(Edge(p2, p1));
 	}
 
 	updateBuffers();
