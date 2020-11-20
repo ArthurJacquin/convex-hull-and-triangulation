@@ -301,7 +301,7 @@ void displayGUI()
 	}
 	if (ImGui::Button("Triangulation Delaunay"))
 	{
-		//edgeTab = triangulateDelaunay(pointsCloud);
+		triangulation = triangulateDelaunay(pointsCloud);
 	}
 
 	ImGui::Separator();

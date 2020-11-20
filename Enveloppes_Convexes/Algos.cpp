@@ -304,19 +304,24 @@ bool PointInTriangle(Vertex pt, Vertex v1, Vertex v2, Vertex v3)
 //check si le troisième point est dans le cercle circonscrit
 bool critereDelaunay(Tri t1, Tri t2)
 {
-	bool exterior = false;
-
+	bool interior = false;
+	std::cerr << "---------CRITERE-----------" << std::endl;
 	for (int i = 0; i < t2.getPoints().size(); i++)
 	{
 		float dist = (t2.getPoints()[i]->GetPos() - t1.getCenter()).magnitude();
-		if (dist > t1.getRadius())
-			exterior = true;
+		
+		std::cerr << "distance avec " << t2.getPoints()[i]->GetPos() << " = " << dist << std::endl;
+		std::cerr << "radius :  " << t1.getRadius() << std::endl;
+		std::cerr << "----" << std::endl;
+
+		if (dist < t1.getRadius())
+			interior = true;
 	}
 
-	if (exterior)
-		return true;
-	else
+	if (interior)
 		return false;
+	else
+		return true;
 }
 
 //Delaunay algorithm
@@ -338,7 +343,7 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 		{
 			for (int e = 0; e < tri[t].getEdge().size(); e++)
 			{
-				if (edge[i] == *tri[t].getEdge()[e])
+				if (edge[i] == tri[t].getEdge()[e])
 				{
 					indexTri.push_back(t);
 				}
@@ -351,7 +356,8 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 			//flipping d'arete
 			if (critereDelaunay(tri[indexTri[0]], tri[indexTri[1]]) == false)
 			{
-				Edge edge = Edge(tri[indexTri[0]].getPoints()[2], tri[indexTri[1]].getPoints()[1]);
+				std::cerr << "pas delaunay !" << std::endl;
+				Edge edge = Edge(tri[indexTri[0]].getPoints()[0], tri[indexTri[1]].getPoints()[1]);
 				laTri.edge.push_back(edge);
 				edge.getEdgePoints()[0]->setColor(Color(0, 1, 0));
 				edge.getEdgePoints()[1]->setColor(Color(0, 1, 0));
@@ -361,6 +367,7 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 			}
 		}
 
+		//edge.erase(edge.begin() + i);
 	}
 
 
