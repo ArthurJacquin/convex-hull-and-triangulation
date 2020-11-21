@@ -13,80 +13,71 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Utility">
+      <UniqueIdentifier>{114eb53e-833e-4a45-9a38-0a844ae86132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\OpenGL">
+      <UniqueIdentifier>{f10a13b2-d5a5-4e9f-abbc-8e6e5f0c2373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Fenetre">
+      <UniqueIdentifier>{f04ee426-aad0-46c2-9ac7-f82ead2465e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Fenetre">
+      <UniqueIdentifier>{6d06c214-79d7-4b5c-adca-92dd4204259f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\OpenGL">
+      <UniqueIdentifier>{95955bf9-87b8-4923-9b38-d61865fe587c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Utility">
+      <UniqueIdentifier>{2b8d258b-9bcb-4a07-badd-a03a7cd43a9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\GLShader.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGLcore.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Fenetre</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="Color.h">
+      <Filter>Fichiers d%27en-tête\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLcore.h">
+      <Filter>Fichiers d%27en-tête\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Fichiers d%27en-tête\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Fichiers d%27en-tête\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="Vec3.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="ConvexEnvelope.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="Vertex.h">
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Tri.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Edge.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Triangulation.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexEnvelope.h">
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\GLShader.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Vertex.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGLcore.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ConvexEnvelope.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Algos.h">
@@ -95,11 +86,38 @@
     <ClCompile Include="Algos.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Tri.cpp">
-      <Filter>Fichiers sources</Filter>
+    <ClCompile Include="Input.cpp">
+      <Filter>Fichiers sources\Fenetre</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Fichiers sources\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\GLShader.cpp">
+      <Filter>Fichiers sources\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLcore.cpp">
+      <Filter>Fichiers sources\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Fichiers sources\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexEnvelope.cpp">
+      <Filter>Fichiers sources\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Edge.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>Fichiers sources\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Tri.cpp">
+      <Filter>Fichiers sources\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Fichiers sources\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Fichiers sources\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
