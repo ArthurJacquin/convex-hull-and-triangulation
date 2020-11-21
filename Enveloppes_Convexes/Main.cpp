@@ -291,6 +291,35 @@ void displayGUI()
 	{
 		convexEnv.push_back(GrahamScan(pointsCloud));
 	}
+	static int taille = 9;
+	ImGui::Text("Number of points :");
+	ImGui::InputInt("", &taille);
+
+	if (ImGui::Button("Generate 3D cloud"))
+	{
+		//pour le debug
+		if (pointsCloud.size() < 1)
+		{
+			pointsCloud.push_back(Vertex(0.02, -0.02, -0.02));
+			pointsCloud.push_back(Vertex(-0.02, -0.02, -0.02));
+			pointsCloud.push_back(Vertex(-0.02, 0.02, -0.02));
+			pointsCloud.push_back(Vertex(0.02, 0.02, -0.02));
+
+			pointsCloud.push_back(Vertex(0.02, -0.02, 0.02));
+			pointsCloud.push_back(Vertex(-0.02, -0.02, 0.02));
+			pointsCloud.push_back(Vertex(-0.02, 0.02, 0.02));
+			pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));
+
+			pointsCloud.push_back(Vertex(0, 0, 0));
+
+		}
+		//random
+		else
+		{
+			// for (int i = 0; i < taille; ++i)
+				//pointsCloud.push_back(Vertex(rand(-1, 1), rand(-1, 1), rand(-1, 1));
+		}
+	}
 
 	ImGui::Separator();
 	ImGui::Text("            Triangulation    ");
