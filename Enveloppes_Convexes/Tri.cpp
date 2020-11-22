@@ -6,32 +6,10 @@ Tri::Tri()
 	neighorTri.resize(0);
 	edge.resize(0);
 
-	center = Vec3(0, 0, 0) ;
+	center = Vec3(0, 0, 0);
 	radius = 0;
-}
 
-void Tri::cercleCirconscrit()
-{
-	Vec3 AB = Vec3(points[1]->x - points[0]->x, points[1]->y - points[0]->y, 0);
-	Vec3 AC = Vec3(points[2]->x - points[0]->x, points[2]->y - points[0]->y, 0);
-
-	Vec3 mediatriceAB = Vec3((points[0]->x + points[1]->x) / 2, (points[0]->y + points[1]->y) / 2, 0);
-	Vec3 mediatriceAC = Vec3((points[0]->x + points[2]->x) / 2, (points[0]->y + points[2]->y) / 2, 0);
-
-	float det = AB.x * AC.y - AB.y * AC.x;
-	
-	float centreX = (AC.y * (AB.x * mediatriceAB.x + AB.y * mediatriceAB.y) - AB.y * (AC.x * mediatriceAC.x + AC.y * mediatriceAC.y)) / det;
-	float centreY = (-AC.x * (AB.x * mediatriceAB.x + AB.y * mediatriceAB.y) + AB.x * (AC.x * mediatriceAC.x + AC.y * mediatriceAC.y)) / det;
-	
-	center = Vec3(centreX, centreY, 0);
-	radius = (points[0]->GetPos() - center).magnitude();
-	/*
-	std::cerr << " ----" << std::endl;
-	for (size_t i = 0; i < points.size(); i++)
-	{
-		std::cerr << (points[i]->GetPos() - center).magnitude() << std::endl;
-	}
-	*/
+	normal = Vec3();
 }
 
 Tri::Tri(Vertex* p1, Vertex* p2, Vertex* p3)
@@ -67,6 +45,38 @@ Tri::Tri(Vertex* p1, Vertex* p2, Vertex* p3)
 	neighorTri.resize(0);
 
 	cercleCirconscrit();
+
+	normal = (points[1]->GetPos() - points[0]->GetPos()) ^ (points[2]->GetPos() - points[0]->GetPos()).normalise();
+}
+
+void Tri::cercleCirconscrit()
+{
+	Vec3 AB = Vec3(points[1]->x - points[0]->x, points[1]->y - points[0]->y, 0);
+	Vec3 AC = Vec3(points[2]->x - points[0]->x, points[2]->y - points[0]->y, 0);
+
+	Vec3 mediatriceAB = Vec3((points[0]->x + points[1]->x) / 2, (points[0]->y + points[1]->y) / 2, 0);
+	Vec3 mediatriceAC = Vec3((points[0]->x + points[2]->x) / 2, (points[0]->y + points[2]->y) / 2, 0);
+
+	float det = AB.x * AC.y - AB.y * AC.x;
+	
+	float centreX = (AC.y * (AB.x * mediatriceAB.x + AB.y * mediatriceAB.y) - AB.y * (AC.x * mediatriceAC.x + AC.y * mediatriceAC.y)) / det;
+	float centreY = (-AC.x * (AB.x * mediatriceAB.x + AB.y * mediatriceAB.y) + AB.x * (AC.x * mediatriceAC.x + AC.y * mediatriceAC.y)) / det;
+	
+	center = Vec3(centreX, centreY, 0);
+	radius = (points[0]->GetPos() - center).magnitude();
+
+	/*
+	std::cerr << " ----" << std::endl;
+	for (size_t i = 0; i < points.size(); i++)
+	{
+		std::cerr << (points[i]->GetPos() - center).magnitude() << std::endl;
+	}
+	*/
+}
+
+bool Tri::operator==(Tri t)
+{
+	return t.getPoints()[0] == points[0] && t.getPoints()[1] == points[1] && t.getPoints()[2] == points[2];
 }
 
 void Tri::updateBuffers()

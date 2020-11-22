@@ -113,7 +113,7 @@ void Input::keyboard_button_callback(GLFWwindow* window, int key, int scancode, 
 		enable3DViewport = !enable3DViewport;
 	}
 
-	if (key == GLFW_KEY_Z && action == GLFW_PRESS) // Enable wireframe
+	if (key == GLFW_KEY_W && action == GLFW_PRESS) // Enable wireframe
 	{
 		enableWireframe = !enableWireframe;
 	}
