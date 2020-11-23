@@ -108,43 +108,46 @@ ConvexEnvelope GrahamScan(std::vector<Vertex>& S)
 	std::vector<Vertex*> P;
 	std::vector<Vertex>& tmp = S;
 
-	float angle_min = 999999999.0f;
-	float dist_min = 999999999.0f;
-	j = size - 1;
-	size_t min = -1;
-
-	// Tri selon l'angle orienté
-	do
+	// Tri selon l'angle orienté (tri à bulles)
+	for(i = 0; i < tmp.size(); ++i)
 	{
+		bool sorted = true;
+
 		// Recherche de l'angle orienté le plus petit
-		for(i = 0; i < tmp.size(); ++i)
+		for(k = 0; k < tmp.size() - 1; ++k)
 		{
-			Vec3 BPi = tmp[i].GetPos() - B.GetPos();
-			float angle = Ox.AngleClockwise(BPi); // angle orienté à l'origine du vecteur BPi
-			if (angle < 0) 
+			Vec3 BPk = tmp[k].GetPos() - B.GetPos();
+			float angle = Ox.AngleClockwise(BPk); // angle orienté à l'origine du vecteur BPk
+			if (angle < 0)
 			{
 				angle = 2 * pi + angle;
 			}
-			float dist = BPi.magnitude(); // distance du point Pi avec le barycentre B
-			if (angle_min > angle || (abs(angle_min - angle) <= 0.01f && dist_min > dist))
+			float dist = BPk.magnitude(); // distance du point Pk avec le barycentre B
+
+			// pareil pour le point à l'index k + 1
+			Vec3 BPkPlusOne = tmp[k + 1].GetPos() - B.GetPos();
+			float  angle_next = Ox.AngleClockwise(BPkPlusOne);
+			if (angle_next < 0)
 			{
-				angle_min = angle;
-				dist_min = dist;
-				min = i;
+				angle_next = 2 * pi + angle_next;
+			}
+			float dist_next = BPkPlusOne.magnitude();
+
+			// comparaison des valeurs pour déterminer le plus petit
+			if (angle_next < angle || (abs(angle_next - angle) <= 0.01f && dist_next < dist))
+			{
+				iter_swap(tmp.begin() + k + 1, tmp.begin() + k);
+				sorted = false;
 			}
 		}
+		if (sorted) break;
+	}
 
-		// ajout du minimum et suppression de tmp
-		P.push_back(&tmp[min]);
-		tmp.erase(tmp.begin() + min);
-
-		// reset des valeurs
-		angle_min = 999999999.0f;
-		dist_min = 999999999.0f;
-		min = -1;
-		
-		j--;
-	} while (j != -1);
+	for(j = 0; j < size; ++j)
+	{
+		// ajout des points triés
+		P.push_back(&tmp[j]);
+	}
 
 	size_t count = 0;
 	i = 0;
@@ -174,7 +177,7 @@ ConvexEnvelope GrahamScan(std::vector<Vertex>& S)
 			i = (i + 1) % P.size();
 			count++;
 		}
-	} while (count != P.size() - 1);
+	} while (count != P.size() - 1 && P.size() > 3);
 	
 	ConvexEnvelope envelope(P);
 	return envelope;
