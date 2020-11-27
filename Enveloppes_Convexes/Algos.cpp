@@ -177,7 +177,7 @@ ConvexEnvelope GrahamScan(std::vector<Vertex>& S)
 			i = (i + 1) % P.size();
 			count++;
 		}
-	} while (count != P.size() - 1 && P.size() > 3);
+	} while (count != P.size() - 1);
 	
 	ConvexEnvelope envelope(P);
 	return envelope;
