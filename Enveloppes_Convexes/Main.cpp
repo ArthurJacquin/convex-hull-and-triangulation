@@ -204,6 +204,7 @@ void Display(GLFWwindow* window)
 	glDrawArrays(GL_POINTS, 0, pointsCloud.size());
 
 	//Draw convex Envelope
+
 	for (int i = 0; i < convexEnv.size(); i++)
 	{
 		VBOCurrent = convexEnv[i].GetVBO();
@@ -211,6 +212,7 @@ void Display(GLFWwindow* window)
 
 		glDrawArrays(GL_LINE_LOOP, 0, convexEnv[i].GetPointsCount());
 	}
+
 
 	//Draw convex Envelope 3D
 	for (int i = 0; i < convexEnv3D.size(); i++)
@@ -316,18 +318,18 @@ void displayGUI()
 		//pour le debug
 		if (pointsCloud.size() < 1)
 		{
-			pointsCloud.push_back(Vertex(0.02, -0.02, -0.02));
-			pointsCloud.push_back(Vertex(-0.02, -0.02, -0.02));
-			pointsCloud.push_back(Vertex(-0.02, 0.02, -0.02));
+			pointsCloud.push_back(Vertex(-0.04, -0.02, -0.02));
+			pointsCloud.push_back(Vertex(-0.03, 0.02, -0.02));
+			pointsCloud.push_back(Vertex(0.03, -0.02, -0.02));
+			pointsCloud.push_back(Vertex(0.04, 0.02, -0.02));
 
 			pointsCloud.push_back(Vertex(0, 0, 0));
 
-			//pointsCloud.push_back(Vertex(0.02, -0.02, 0.02));
-			//pointsCloud.push_back(Vertex(-0.02, -0.02, 0.02));
-			//pointsCloud.push_back(Vertex(-0.02, 0.02, 0.02));
-			//pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));
+			pointsCloud.push_back(Vertex(-0.02, -0.02, 0.02));
+			pointsCloud.push_back(Vertex(-0.02, 0.02, 0.02));
+			pointsCloud.push_back(Vertex(0.02, -0.02, 0.02));
+			pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));
 
-			pointsCloud.push_back(Vertex(0.02, 0.02, -0.02));
 
 		}
 		//random
@@ -395,6 +397,7 @@ void displayGUI()
 		convexEnv.clear();
 		meshes.clear();
 		triangulation.clear();
+		convexEnv3D.clear();
 	}
 
 	ImGui::End();

@@ -41,12 +41,13 @@ Tri::Tri(Vertex* p1, Vertex* p2, Vertex* p3)
 		edge.push_back(Edge(p2, p1));
 	}
 
-	updateBuffers();
-	neighorTri.resize(0);
-
 	cercleCirconscrit();
 
 	normal = (points[1]->GetPos() - points[0]->GetPos()) ^ (points[2]->GetPos() - points[0]->GetPos()).normalise();
+
+	updateBuffers();
+	neighorTri.resize(0);
+
 }
 
 void Tri::cercleCirconscrit()
@@ -76,7 +77,23 @@ void Tri::cercleCirconscrit()
 
 bool Tri::operator==(Tri t)
 {
-	return t.getPoints()[0] == points[0] && t.getPoints()[1] == points[1] && t.getPoints()[2] == points[2];
+	int same = 0;
+	for (size_t i = 0; i < 3; i++)
+	{
+		for (size_t j = 0; j < 3; j++)
+		{
+			if (points[i] == t.points[j])
+			{
+				same++;
+				break;
+			}
+		}
+
+		if (same <= i)
+			return false;
+	}
+
+	return true;
 }
 
 void Tri::updateBuffers()
@@ -90,5 +107,6 @@ void Tri::updateBufferPoints()
 	for (size_t i = 0; i < points.size(); i++)
 	{
 		bufferPts.push_back(*points[i]);
+		bufferPts[i].setNormal(normal.normalise());
 	}
 }

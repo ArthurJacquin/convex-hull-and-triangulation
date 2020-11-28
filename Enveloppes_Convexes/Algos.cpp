@@ -183,6 +183,17 @@ ConvexEnvelope GrahamScan(std::vector<Vertex>& S)
 }
 
 //-------------------------------------Enveloppe Convex 3D------------------------------------------
+int checkIfTriExist(Tri t, vector<Tri> tris)
+{
+	for (size_t i = 0; i < tris.size(); i++)
+	{
+		if (t == tris[i])
+			return i;
+	}
+
+	return -1;
+}
+
 ConvexEnvelope3D Envelope3D(std::vector<Vertex>& S)
 {
 	std::vector<Tri> triangles;
@@ -207,6 +218,8 @@ ConvexEnvelope3D Envelope3D(std::vector<Vertex>& S)
 	//3 : parcours des points suivants de S (sorted)
 	for (int p = 4; p < S.size(); p++)
 	{
+		std::vector<Tri> newTriangles;
+
 		//check visibilité par rapport à tous les triangles exterior
 		for (int t = 0; t < triangles.size(); t++)
 		{
@@ -234,16 +247,31 @@ ConvexEnvelope3D Envelope3D(std::vector<Vertex>& S)
 				tetras.push_back(newTetra);
 
 				//Mise a jour des triangles exterieur
-				triangles.erase(triangles.begin() + t);
 				for (size_t i = 1; i < 4; i++)
 				{
-					triangles.push_back(newTetra.getTriangle()[i]);
+					int id = checkIfTriExist(newTetra.getTriangle()[i], newTriangles);
+					if (id != -1)
+						newTriangles.erase(newTriangles.begin() + id);
+					else
+						newTriangles.push_back(newTetra.getTriangle()[i]);
+
 				}
+
+				//Suppression de triangle
+				triangles.erase(triangles.begin() + t);
+				t--;
 			}
+		}
+
+		//Ajout des nouveaux triangles
+		for (size_t i = 0; i < newTriangles.size(); i++)
+		{
+			triangles.push_back(newTriangles[i]);
 		}
 	}
 
 	return ConvexEnvelope3D(triangles);
+
 }
 
 Vertex nearestVertex(Vertex v, std::vector<Vertex> tabV)
