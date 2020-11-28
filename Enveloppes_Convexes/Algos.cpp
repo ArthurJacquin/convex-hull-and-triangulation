@@ -26,6 +26,8 @@ Vertex FindBarycenter(std::vector<Vertex> S)
 	return Vertex(avg_x, avg_y, avg_z);
 }
 
+
+//-------------------------------------Enveloppe Convex------------------------------------------
 ConvexEnvelope Jarvis(std::vector<Vertex>& S)
 {
 	int i0 = 0;
@@ -181,7 +183,99 @@ ConvexEnvelope GrahamScan(std::vector<Vertex>& S)
 	
 	ConvexEnvelope envelope(P);
 	return envelope;
-};
+}
+
+//-------------------------------------Enveloppe Convex 3D------------------------------------------
+int checkIfTriExist(Tri t, vector<Tri> tris)
+{
+	for (size_t i = 0; i < tris.size(); i++)
+	{
+		if (t == tris[i])
+			return i;
+	}
+
+	return -1;
+}
+
+ConvexEnvelope3D Envelope3D(std::vector<Vertex>& S)
+{
+	std::vector<Tri> triangles;
+	vector<Tetrahedre> tetras;
+
+	//1 : sort vector by abscisse (utilise l'operator < dans Vertex.h)
+	std::sort(S.begin(), S.end());
+
+	//2 : faire un premier tetrahedre
+	if (S.size() > 4)
+	{
+		tetras.push_back(Tetrahedre(&S[0], &S[1], &S[2], &S[3]));
+
+		for (size_t i = 0; i < tetras[0].getTriangle().size(); i++)
+		{
+			triangles.push_back(tetras[0].getTriangle()[i]);
+		}
+	}
+	else
+		std::cerr << "Pas assez de points pour faire un tetrahedre ! " << std::endl;
+
+	//3 : parcours des points suivants de S (sorted)
+	for (int p = 4; p < S.size(); p++)
+	{
+		std::vector<Tri> newTriangles;
+
+		//check visibilité par rapport à tous les triangles exterior
+		for (int t = 0; t < triangles.size(); t++)
+		{
+			//Get le tetrahedre contenant le triangle
+			Tetrahedre currentTetra;
+			Tri currentTri;
+			for (size_t i = 0; i < tetras.size(); i++)
+			{
+				int id = tetras[i].containsTri(triangles[t]);
+				if (id != -1)
+				{
+					currentTetra = tetras[i];
+					currentTri = tetras[i].getTriangle()[id];
+					break;
+				}
+			}
+			
+			Vec3 AS = S[p].GetPos() - currentTri.getPoints()[0]->GetPos();
+
+			//Si visible depuis le triangle
+			if (currentTri.getNormal().dot(AS) > 0)
+			{
+				//Nouveau tetrahedre
+				Tetrahedre newTetra(currentTri.getPoints()[0], currentTri.getPoints()[1], currentTri.getPoints()[2], &S[p]);
+				tetras.push_back(newTetra);
+
+				//Mise a jour des triangles exterieur
+				for (size_t i = 1; i < 4; i++)
+				{
+					int id = checkIfTriExist(newTetra.getTriangle()[i], newTriangles);
+					if (id != -1)
+						newTriangles.erase(newTriangles.begin() + id);
+					else
+						newTriangles.push_back(newTetra.getTriangle()[i]);
+
+				}
+
+				//Suppression de triangle
+				triangles.erase(triangles.begin() + t);
+				t--;
+			}
+		}
+
+		//Ajout des nouveaux triangles
+		for (size_t i = 0; i < newTriangles.size(); i++)
+		{
+			triangles.push_back(newTriangles[i]);
+		}
+	}
+
+	return ConvexEnvelope3D(triangles);
+
+}
 
 Vertex nearestVertex(Vertex v, std::vector<Vertex> tabV)
 {
@@ -205,6 +299,8 @@ Vertex nearestVertex(Vertex v, std::vector<Vertex> tabV)
 
 	return vNear;
 }
+
+//-------------------------------------Triangulation------------------------------------------
 
 //test si un point est visible par un edge
 bool isVisible(Vertex v, Edge e)
@@ -350,7 +446,6 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 				{
 					indexTri.push_back(t);
 				}
-
 			}
 		}
 

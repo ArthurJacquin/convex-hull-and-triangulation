@@ -26,7 +26,7 @@ void main(void)
 		vec4 ambient = vec4(0.2, 0.2, 0.2, 1.0);
 
 		//DiffuseColor
-		float maxDot = max(dot(v_normal, dirToLight), 0.0);
+		float maxDot = max(dot(v_normal, dirToLight), 0.0) * 2.0;
 		vec4 diffuseColor = vec4(maxDot, maxDot, maxDot, 1.0);
 
 		//Specular
