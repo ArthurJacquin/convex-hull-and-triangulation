@@ -113,7 +113,7 @@ void Input::keyboard_button_callback(GLFWwindow* window, int key, int scancode, 
 		enable3DViewport = !enable3DViewport;
 	}
 
-	if (key == GLFW_KEY_Z && action == GLFW_PRESS) // Enable wireframe
+	if (key == GLFW_KEY_W && action == GLFW_PRESS) // Enable wireframe
 	{
 		enableWireframe = !enableWireframe;
 	}
@@ -126,8 +126,8 @@ void Input::keyboard_button_callback(GLFWwindow* window, int key, int scancode, 
 
 void Input::computeMatricesFromInputs(GLFWwindow* win, GLint winWidth, GLint winHeight)
 {
-	float speed = 5.0f;
-	float mouseSpeed = 0.5f;
+	float speed = 2.0f;
+	float mouseSpeed = 0.2f;
 
 	double currentTime = glfwGetTime();
 	float deltaTime = float(currentTime - lastTime);

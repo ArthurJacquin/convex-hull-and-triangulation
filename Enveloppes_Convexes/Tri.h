@@ -17,6 +17,8 @@ private:
 	Vec3 center;
 	float radius;
 
+	Vec3 normal;
+
 	uint32_t VBO;
 
 public:
@@ -28,14 +30,18 @@ public:
 	std::vector<Edge>& getEdge() { return edge; }
 	const Vec3 getCenter() const { return center; }
 	const float getRadius() const { return radius; }
+	Vec3 getNormal()const { return normal; }
 
 	void setPoints(Vertex* p1, Vertex* p2, Vertex* p3) { points.push_back(p1);
 													  points.push_back(p2);
 													  points.push_back(p3);}
+	void setNormal(Vec3 n) { normal = n; }
+
 	void updateBuffers();
 	uint32_t GetVBO()const { return VBO; }
 	void updateBufferPoints();
 
 	void cercleCirconscrit();
 
+	bool operator==(Tri t);
 };

@@ -75,6 +75,12 @@
     <ClInclude Include="ConvexEnvelope.h">
       <Filter>Fichiers d%27en-tête\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="ConvexEnvelope3D.h">
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Tetrahedre.h">
+      <Filter>Fichiers d%27en-tête\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -117,6 +123,12 @@
       <Filter>Fichiers sources\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Vertex.cpp">
+      <Filter>Fichiers sources\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexEnvelope3D.cpp">
+      <Filter>Fichiers sources\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Tetrahedre.cpp">
       <Filter>Fichiers sources\Utility</Filter>
     </ClCompile>
   </ItemGroup>

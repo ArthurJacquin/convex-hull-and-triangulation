@@ -36,6 +36,7 @@
 #include "Color.h"
 #include "Mesh.h"
 #include "Triangulation.h"
+#include "ConvexEnvelope3D.h"
 
 const char* glsl_version = "#version 420";
 
@@ -48,6 +49,7 @@ Input input;
 //tableau de positions du tableau en cours
 std::vector<Vertex> pointsCloud;
 std::vector<ConvexEnvelope> convexEnv;
+std::vector<ConvexEnvelope3D> convexEnv3D;
 std::vector<Mesh> meshes;
 Triangulation triangulation;
 
@@ -182,6 +184,13 @@ void Display(GLFWwindow* window)
 	else
 		glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &ortho[0][0]);
 
+	//Wireframe
+	if (enableWireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
 	//Shading
 	glUniform1f(enableNormalLocation, enableNormal);
 	glUniform1f(enable3DViewportLocation, enable3DViewport);
@@ -195,12 +204,26 @@ void Display(GLFWwindow* window)
 	glDrawArrays(GL_POINTS, 0, pointsCloud.size());
 
 	//Draw convex Envelope
+
 	for (int i = 0; i < convexEnv.size(); i++)
 	{
 		VBOCurrent = convexEnv[i].GetVBO();
 		updateVBO();
 
 		glDrawArrays(GL_LINE_LOOP, 0, convexEnv[i].GetPointsCount());
+	}
+
+
+	//Draw convex Envelope 3D
+	for (int i = 0; i < convexEnv3D.size(); i++)
+	{
+		for (size_t j = 0; j < convexEnv3D[i].GetTrianglesCount(); j++)
+		{
+			VBOCurrent = convexEnv3D[i].GetTriangles()[j].GetVBO();
+			updateVBO();
+
+			glDrawArrays(GL_TRIANGLES, 0, 3);
+		}
 	}
 
 	//Draw triangulation
@@ -220,11 +243,6 @@ void Display(GLFWwindow* window)
 		updateVBO();
 
 		glCullFace(GL_FRONT_AND_BACK);
-
-		if(enableWireframe)
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		else
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		glDrawElements(GL_TRIANGLES, meshes[i].getIndices().size(), GL_UNSIGNED_INT, meshes[i].getIndices().data());
 	}
@@ -291,6 +309,48 @@ void displayGUI()
 	{
 		convexEnv.push_back(GrahamScan(pointsCloud));
 	}
+	static int taille = 9;
+	ImGui::Text("Number of points :");
+	ImGui::InputInt("", &taille);
+
+	if (ImGui::Button("Generate 3D cloud"))
+	{
+		//pour le debug
+		if (pointsCloud.size() < 1)
+		{
+			pointsCloud.push_back(Vertex(-0.04, -0.02, -0.02));
+			pointsCloud.push_back(Vertex(-0.03, 0.02, -0.02));
+			pointsCloud.push_back(Vertex(0.03, -0.02, -0.02));
+			pointsCloud.push_back(Vertex(0.04, 0.02, -0.02));
+
+			pointsCloud.push_back(Vertex(0, 0, 0));
+
+			pointsCloud.push_back(Vertex(-0.02, -0.02, 0.02));
+			pointsCloud.push_back(Vertex(-0.02, 0.02, 0.02));
+			pointsCloud.push_back(Vertex(0.02, -0.02, 0.02));
+			pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));
+
+
+		}
+		//random
+		else
+		{
+			pointsCloud.clear();
+			for (int i = 0; i < taille; ++i)
+			{
+				double x = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
+				double y = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
+				double z = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
+
+				pointsCloud.push_back(Vertex(x, y, z));
+			}
+		}
+	}
+
+	if (ImGui::Button("Enveloppe 3D"))
+	{
+		convexEnv3D.push_back(Envelope3D(pointsCloud));
+	}
 
 	ImGui::Separator();
 	ImGui::Text("            Triangulation    ");
@@ -337,6 +397,7 @@ void displayGUI()
 		convexEnv.clear();
 		meshes.clear();
 		triangulation.clear();
+		convexEnv3D.clear();
 	}
 
 	ImGui::End();
