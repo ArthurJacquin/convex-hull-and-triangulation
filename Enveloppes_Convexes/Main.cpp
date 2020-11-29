@@ -48,6 +48,7 @@ Input input;
 
 //tableau de positions du tableau en cours
 std::vector<Vertex> pointsCloud;
+std::vector<Vertex> voronoiPoints;
 std::vector<ConvexEnvelope> convexEnv;
 std::vector<ConvexEnvelope3D> convexEnv3D;
 std::vector<Mesh> meshes;
@@ -362,6 +363,10 @@ void displayGUI()
 	if (ImGui::Button("Triangulation Delaunay"))
 	{
 		triangulation = triangulateDelaunay(pointsCloud);
+	}
+	if(ImGui::Button("Diagramme de Voronoi"))
+	{
+		triangulation = voronoiDiagram(pointsCloud, voronoiPoints);
 	}
 
 	ImGui::Separator();

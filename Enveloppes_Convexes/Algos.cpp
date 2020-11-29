@@ -481,3 +481,69 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 
 	return laTri;
 }
+
+//Voronoi from Delaunay algorithm
+Triangulation voronoiDiagram(std::vector<Vertex>& S, std::vector<Vertex>& V)
+{	
+	Triangulation delaunay = triangulateDelaunay(S);
+	Triangulation voronoi;
+
+	std::vector<Edge> voronoiEdge;
+	
+	for (int i = 0; i < delaunay.edge.size(); ++i)
+	{
+		if (delaunay.edge[i].getExterior() == true)
+		{
+			int indexTriangle = 0;
+			
+			//trouver le triangle qui utilise cette edge
+			for(int t = 0; t < delaunay.tri.size(); ++t)
+			{
+				for(int e = 0; e < delaunay.tri[t].getEdge().size(); ++e)
+				{
+					if(delaunay.edge[i] == delaunay.tri[t].getEdge()[e])
+					{
+						indexTriangle = t;
+						break;
+					}
+				}
+			}
+			V[0] = Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint());
+			V[1] = Vertex(delaunay.edge[i].getMiddleEdgePoint());
+			
+			Edge edge = Edge(&V[0], &V[1]);
+			
+			voronoiEdge.push_back(edge);
+		}
+		else
+		{
+			std::vector<int> indexTriangle;
+
+			//trouver les deux triangles qui utilisent cette edge
+			for (int t = 0; t < delaunay.tri.size(); ++t)
+			{
+				for (int e = 0; e < delaunay.tri[t].getEdge().size(); ++e)
+				{
+					if (delaunay.edge[i] == delaunay.tri[t].getEdge()[e])
+					{
+						indexTriangle.push_back(t);
+					}
+				}
+			}
+
+			if (indexTriangle.size() < 2) continue;
+
+			V[0] = Vertex(delaunay.tri[indexTriangle[0]].getCenterCirclePoint());
+			V[1] = Vertex(delaunay.tri[indexTriangle[1]].getCenterCirclePoint());
+			
+			Edge edge = Edge(&V[0], &V[1]);
+
+			voronoiEdge.push_back(edge);
+			
+		}
+	}
+
+	voronoi.edge = voronoiEdge;
+	
+	return voronoi;
+}

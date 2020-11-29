@@ -6,7 +6,7 @@ Tri::Tri()
 	neighorTri.resize(0);
 	edge.resize(0);
 
-	center = Vec3(0, 0, 0);
+	circleCenter = Vertex(0, 0, 0);
 	radius = 0;
 
 	normal = Vec3();
@@ -63,8 +63,8 @@ void Tri::cercleCirconscrit()
 	float centreX = (AC.y * (AB.x * mediatriceAB.x + AB.y * mediatriceAB.y) - AB.y * (AC.x * mediatriceAC.x + AC.y * mediatriceAC.y)) / det;
 	float centreY = (-AC.x * (AB.x * mediatriceAB.x + AB.y * mediatriceAB.y) + AB.x * (AC.x * mediatriceAC.x + AC.y * mediatriceAC.y)) / det;
 	
-	center = Vec3(centreX, centreY, 0);
-	radius = (points[0]->GetPos() - center).magnitude();
+	circleCenter = Vertex(centreX, centreY, 0);
+	radius = (points[0]->GetPos() - circleCenter.GetPos()).magnitude();
 
 	/*
 	std::cerr << " ----" << std::endl;

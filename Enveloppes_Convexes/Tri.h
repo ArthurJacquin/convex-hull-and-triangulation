@@ -14,7 +14,7 @@ private:
 	std::vector<Edge> edge;
 	//bool clockwise;
 
-	Vec3 center;
+	Vertex circleCenter;
 	float radius;
 
 	Vec3 normal;
@@ -28,7 +28,8 @@ public:
 	const std::vector<Vertex*> getPoints() const { return points; }
 	const std::vector<Tri*> getNeighorTri() const { return neighorTri; }
 	std::vector<Edge>& getEdge() { return edge; }
-	const Vec3 getCenter() const { return center; }
+	Vertex getCenterCirclePoint() const { return circleCenter; }
+	const Vec3 getCenter() const { return circleCenter.GetPos(); }
 	const float getRadius() const { return radius; }
 	Vec3 getNormal()const { return normal; }
 
