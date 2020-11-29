@@ -67,8 +67,6 @@ void Input::mouse_button_callback(GLFWwindow* window, int button, int action, in
 			Color col(1.0f, 1.0f, 1.0f);
 			Vertex newPoint = Vertex(-1.0f + 2 * xpos / width, 1.0f - 2 * ypos / height, 0.0, col.x, col.y, col.z);
 			pointsCloud.push_back(newPoint);
-			Vertex voronoiPoint = Vertex(.0, .0, .0, col.x, col.y, col.z);
-			voronoiPoints.push_back(voronoiPoint);
 		}
 	}
 

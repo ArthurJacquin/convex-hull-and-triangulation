@@ -508,10 +508,10 @@ Triangulation voronoiDiagram(std::vector<Vertex>& S, std::vector<Vertex>& V)
 					}
 				}
 			}
-			V[0] = Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint());
-			V[1] = Vertex(delaunay.edge[i].getMiddleEdgePoint());
+			V.emplace_back(Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint()));
+			V.emplace_back(Vertex(delaunay.edge[i].getMiddleEdgePoint()));
 			
-			Edge edge = Edge(&V[0], &V[1]);
+			Edge edge = Edge(&V[V.size() - 1], &V[V.size() - 2]);
 			
 			voronoiEdge.push_back(edge);
 		}
@@ -533,10 +533,10 @@ Triangulation voronoiDiagram(std::vector<Vertex>& S, std::vector<Vertex>& V)
 
 			if (indexTriangle.size() < 2) continue;
 
-			V[0] = Vertex(delaunay.tri[indexTriangle[0]].getCenterCirclePoint());
-			V[1] = Vertex(delaunay.tri[indexTriangle[1]].getCenterCirclePoint());
+			V.emplace_back(Vertex(delaunay.tri[indexTriangle[0]].getCenterCirclePoint()));
+			V.emplace_back(Vertex(delaunay.tri[indexTriangle[1]].getCenterCirclePoint()));
 			
-			Edge edge = Edge(&V[0], &V[1]);
+			Edge edge = Edge(&V[V.size() - 1], &V[V.size() - 2]);
 
 			voronoiEdge.push_back(edge);
 			
