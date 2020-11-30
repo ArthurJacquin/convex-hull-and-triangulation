@@ -4,7 +4,7 @@
 Edge::Edge()
 {
 	edgePoints.reserve(0);
-	middleEdge = Vertex(.0f, .0f, .0f, 1.0, .0, .0);
+	middleEdge = Vertex(.0, .0, .0, 1.0, .0, 1.0);
 	exterior = true;
 	normale = Vec3(0, 0, 0);
 }
@@ -33,7 +33,7 @@ void Edge::calculateMiddle()
 	double x = (edgePoints[0]->x + edgePoints[1]->x) / 2;
 	double y = (edgePoints[0]->y + edgePoints[1]->y) / 2;
 	
-	middleEdge = Vertex(x, y, .0f, 1.0, .0, .0);
+	middleEdge = Vertex(x, y, .0, 1.0, .0, 1.0);
 }
 
 void Edge::updateBuffers()

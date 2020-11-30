@@ -8,7 +8,6 @@
 
 extern int width, height;
 extern std::vector<Vertex> pointsCloud;
-extern std::vector<Vertex> voronoiPoints;
 
 extern Color choosedColor;
 extern float step;
@@ -39,7 +38,6 @@ Input::Input()
 void Input::deleteVertex()
 {
 	pointsCloud.clear();
-	voronoiPoints.clear();
 }
 
 float Input::getDistance(float xa, float ya, Vertex v)

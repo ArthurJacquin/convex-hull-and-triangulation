@@ -48,12 +48,10 @@ Input input;
 
 //tableau de positions du tableau en cours
 std::vector<Vertex> pointsCloud;
-std::vector<Vertex> voronoiPoints;
 std::vector<ConvexEnvelope> convexEnv;
 std::vector<ConvexEnvelope3D> convexEnv3D;
 std::vector<Mesh> meshes;
 Triangulation triangulation;
-Triangulation voronoi;
 
 bool movingPoint;
 int selectedPointId;
@@ -206,7 +204,6 @@ void Display(GLFWwindow* window)
 	glDrawArrays(GL_POINTS, 0, pointsCloud.size());
 
 	//Draw convex Envelope
-
 	for (int i = 0; i < convexEnv.size(); i++)
 	{
 		VBOCurrent = convexEnv[i].GetVBO();
@@ -367,8 +364,7 @@ void displayGUI()
 	}
 	if(ImGui::Button("Diagramme de Voronoi"))
 	{
-		triangulation = triangulateDelaunay(pointsCloud);
-		voronoi = voronoiDiagram(pointsCloud, voronoiPoints);
+		triangulation = voronoiDiagram(pointsCloud);
 	}
 
 	ImGui::Separator();
@@ -404,7 +400,6 @@ void displayGUI()
 		convexEnv.clear();
 		meshes.clear();
 		triangulation.clear();
-		voronoi.clear();
 		convexEnv3D.clear();
 	}
 
