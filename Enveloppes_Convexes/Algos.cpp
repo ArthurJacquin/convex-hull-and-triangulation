@@ -469,9 +469,14 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 			//flipping d'arete
 			if (critereDelaunay(laTri.tri[indexTri[0]], laTri.tri[indexTri[1]]) == false)
 			{
+				//New triangles
+				laTri.tri[indexTri[0]] = Tri(vertexNotInEdge[0], vertexNotInEdge[1], laTri.edge[i].getEdgePoints()[0]);
+				laTri.tri[indexTri[1]] = Tri(vertexNotInEdge[0], vertexNotInEdge[1], laTri.edge[i].getEdgePoints()[1]);
+
+				//New edge
 				Edge newEdge = Edge(vertexNotInEdge[0], vertexNotInEdge[1]);
 				laTri.edge[i] = newEdge;
-				
+
 				//DEBUG : point en vert
 				//newEdge.getEdgePoints()[0]->setColor(Color(0, 1, 0));
 				//newEdge.getEdgePoints()[1]->setColor(Color(0, 1, 0));
