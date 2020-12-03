@@ -43,6 +43,8 @@ public:
 	void updateBufferPoints();
 
 	void cercleCirconscrit();
-
+	
+	bool isPointInTriangle(Vertex p) const;
+	
 	bool operator==(Tri t);
 };

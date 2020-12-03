@@ -75,6 +75,21 @@ void Tri::cercleCirconscrit()
 	*/
 }
 
+bool Tri::isPointInTriangle(Vertex p) const
+{
+	float s = points[0]->y * points[2]->x - points[0]->x * points[2]->y + (points[2]->y - points[0]->y) * p.x + (points[0]->x - points[2]->x) * p.y;
+	float t = points[0]->x * points[1]->y - points[0]->y * points[1]->x + (points[0]->y - points[1]->y) * p.x + (points[1]->x - points[0]->x) * p.y;
+
+	if ((s < 0) != (t < 0))
+		return false;
+
+	float A = -points[1]->y * points[2]->x + points[0]->y * (points[2]->x - points[1]->x) + points[0]->x * (points[1]->y - points[2]->y) + points[1]->x * points[2]->y;
+
+	return A < 0 ?
+		(s <= 0 && s + t >= A) :
+		(s >= 0 && s + t <= A);
+}
+
 bool Tri::operator==(Tri t)
 {
 	int same = 0;

@@ -17,6 +17,15 @@ struct Triangulation
 		tri = t;
 	}
 
+	bool isPointInTriangulation(Vertex p)
+	{
+		for (size_t i = 0; i < tri.size(); ++i)
+		{
+			if (tri[i].isPointInTriangle(p)) return true;
+		}
+		return false;
+	}
+	
 	void clear()
 	{
 		edge.clear();
