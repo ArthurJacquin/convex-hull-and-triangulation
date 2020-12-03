@@ -486,6 +486,7 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 
 				//New edge
 				Edge newEdge = Edge(vertexNotInEdge[0], vertexNotInEdge[1]);
+				newEdge.setInterior();
 				laTri.edge[i] = newEdge;
 
 				//DEBUG : point en vert
