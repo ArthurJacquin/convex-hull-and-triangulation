@@ -28,7 +28,7 @@ struct Vertex
 	void setColor(Color color);
 	void setPositionUsingMouse(double x, double y);
 	void setNormal(Vec3 n);
-	float Distance(Vertex v2) { return sqrt(pow((v2.x - x), 2) + pow((v2.y - y),2) + pow((v2.z - z), 2)); }
+	double Distance(Vertex v2) { return sqrt(pow((v2.x - x), 2) + pow((v2.y - y),2) + pow((v2.z - z), 2)); }
 
 	Vec3 GetPos()const { return Vec3(x, y, z); }
 	std::vector<Vertex*> getNeighborVertices() const { return neighborVertices; }

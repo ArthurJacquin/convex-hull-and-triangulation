@@ -317,7 +317,7 @@ void displayGUI()
 		//pour le debug
 		if (pointsCloud.size() < 1)
 		{
-			pointsCloud.push_back(Vertex(-0.04, -0.02, -0.02));
+			/*pointsCloud.push_back(Vertex(-0.04, -0.02, -0.02));
 			pointsCloud.push_back(Vertex(-0.03, 0.02, -0.02));
 			pointsCloud.push_back(Vertex(0.03, -0.02, -0.02));
 			pointsCloud.push_back(Vertex(0.04, 0.02, -0.02));
@@ -327,8 +327,13 @@ void displayGUI()
 			pointsCloud.push_back(Vertex(-0.02, -0.02, 0.02));
 			pointsCloud.push_back(Vertex(-0.02, 0.02, 0.02));
 			pointsCloud.push_back(Vertex(0.02, -0.02, 0.02));
-			pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));
+			pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));*/
 
+			pointsCloud.push_back(Vertex(-0.43, -0.57, 0.0));
+			pointsCloud.push_back(Vertex(-0.4, 0.03, 0.0));
+			pointsCloud.push_back(Vertex(-0.38, 0.35, 0.0));
+			pointsCloud.push_back(Vertex(-0.3, -0.18, 0.0));
+			pointsCloud.push_back(Vertex(-0.35, 0.48, 0.0));
 
 		}
 		//random

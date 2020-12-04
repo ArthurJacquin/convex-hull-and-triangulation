@@ -418,13 +418,33 @@ bool critereDelaunay(Tri t1, Tri t2)
 	//std::cerr << "---------CRITERE-----------" << std::endl;
 	for (int i = 0; i < t2.getPoints().size(); i++)
 	{
-		float dist = (t2.getPoints()[i]->GetPos() - t1.getCenter()).magnitude();
+		double dist = (t2.getPoints()[i]->GetPos() - t1.getCenter()).magnitude();
 		
 		//std::cerr << "distance avec " << t2.getPoints()[i]->GetPos() << " = " << dist << std::endl;
 		//std::cerr << "radius :  " << t1.getRadius() << std::endl;
 		//std::cerr << "----" << std::endl;
 
-		if (dist > t1.getRadius() + FLT_EPSILON)
+		double v = t1.getRadius();
+		if (abs(dist - v) < 0.00001)
+			cout << "LA" << endl;
+
+
+		if (dist > t1.getRadius() + 0.00001)
+			exterior = true;
+	}
+
+	for (int i = 0; i < t1.getPoints().size(); i++)
+	{
+		double dist = (t1.getPoints()[i]->GetPos() - t2.getCenter()).magnitude();
+
+		double v = t1.getRadius();
+		if (abs(dist - v) < 0.00001)
+			cout << "LA" << endl;
+		//std::cerr << "distance avec " << t2.getPoints()[i]->GetPos() << " = " << dist << std::endl;
+		//std::cerr << "radius :  " << t1.getRadius() << std::endl;
+		//std::cerr << "----" << std::endl;
+
+		if (dist > t2.getRadius() + DBL_EPSILON)
 			exterior = true;
 	}
 
@@ -439,62 +459,68 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 {
 	Triangulation laTri = triangulateIncremental(S);
 
-	//flipping d'arete
-	for (int i = 0; i < laTri.edge.size(); ++i)
+	bool done = false;
+	do
 	{
-		if (laTri.edge[i].getExterior() == true)
-			continue;
-
-		std::vector<int> indexTri;
-		std::vector<Vertex*> vertexNotInEdge;
-
-		//parcours des triangles pour trouver le triangle avec son double
-		for (int t = 0; t < laTri.tri.size(); t++)
+		done = false;
+		//flipping d'arete
+		for (int i = 0; i < laTri.edge.size(); ++i)
 		{
-			for (int e = 0; e < laTri.tri[t].getEdge().size(); e++)
-			{
-				if (laTri.edge[i] == laTri.tri[t].getEdge()[e])
-				{
-					indexTri.push_back(t);
-				}
-			}
-		}
+			if (laTri.edge[i].getExterior() == true)
+				continue;
 
-		if (indexTri.size() > 1)
-		{
-			//parcours sur les triangles qui sont sur l'edge pour stocker les vertices différents de l'edge
-			for(int j = 0; j < 2; ++j)
+			std::vector<int> indexTri;
+			std::vector<Vertex*> vertexNotInEdge;
+
+			//parcours des triangles pour trouver le triangle avec son double
+			for (int t = 0; t < laTri.tri.size(); t++)
 			{
-				for (int k = 0; k < 3; ++k)
+				for (int e = 0; e < laTri.tri[t].getEdge().size(); e++)
 				{
-					if (laTri.tri[indexTri[j]].getPoints()[k] != laTri.edge[i].getEdgePoints()[0]
-						&& laTri.tri[indexTri[j]].getPoints()[k] != laTri.edge[i].getEdgePoints()[1])
+					if (laTri.edge[i] == laTri.tri[t].getEdge()[e])
 					{
-						vertexNotInEdge.push_back(laTri.tri[indexTri[j]].getPoints()[k]);
-						break;
+						indexTri.push_back(t);
 					}
 				}
 			}
 
-
-			//flipping d'arete
-			if (critereDelaunay(laTri.tri[indexTri[0]], laTri.tri[indexTri[1]]) == false)
+			if (indexTri.size() > 1)
 			{
-				//New triangles
-				laTri.tri[indexTri[0]] = Tri(vertexNotInEdge[0], vertexNotInEdge[1], laTri.edge[i].getEdgePoints()[0]);
-				laTri.tri[indexTri[1]] = Tri(vertexNotInEdge[0], vertexNotInEdge[1], laTri.edge[i].getEdgePoints()[1]);
+				//parcours sur les triangles qui sont sur l'edge pour stocker les vertices différents de l'edge
+				for (int j = 0; j < 2; ++j)
+				{
+					for (int k = 0; k < 3; ++k)
+					{
+						if (laTri.tri[indexTri[j]].getPoints()[k] != laTri.edge[i].getEdgePoints()[0]
+							&& laTri.tri[indexTri[j]].getPoints()[k] != laTri.edge[i].getEdgePoints()[1])
+						{
+							vertexNotInEdge.push_back(laTri.tri[indexTri[j]].getPoints()[k]);
+							break;
+						}
+					}
+				}
 
-				//New edge
-				Edge newEdge = Edge(vertexNotInEdge[0], vertexNotInEdge[1]);
-				newEdge.setInterior();
-				laTri.edge[i] = newEdge;
 
-				//DEBUG : point en vert
-				//newEdge.getEdgePoints()[0]->setColor(Color(0, 1, 0));
-				//newEdge.getEdgePoints()[1]->setColor(Color(0, 1, 0));
+				//flipping d'arete
+				if (critereDelaunay(laTri.tri[indexTri[0]], laTri.tri[indexTri[1]]) == false)
+				{
+					//New triangles
+					laTri.tri[indexTri[0]] = Tri(vertexNotInEdge[0], vertexNotInEdge[1], laTri.edge[i].getEdgePoints()[0]);
+					laTri.tri[indexTri[1]] = Tri(vertexNotInEdge[0], vertexNotInEdge[1], laTri.edge[i].getEdgePoints()[1]);
+
+					//New edge
+					Edge newEdge = Edge(vertexNotInEdge[0], vertexNotInEdge[1]);
+					newEdge.setInterior();
+					laTri.edge[i] = newEdge;
+
+					done = true;
+					//DEBUG : point en vert
+					//newEdge.getEdgePoints()[0]->setColor(Color(0, 1, 0));
+					//newEdge.getEdgePoints()[1]->setColor(Color(0, 1, 0));
+				}
 			}
 		}
-	}
+	} while (done);
 
 	return laTri;
 }

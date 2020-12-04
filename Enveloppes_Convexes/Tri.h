@@ -15,7 +15,7 @@ private:
 	//bool clockwise;
 
 	Vertex circleCenter;
-	float radius;
+	double radius;
 
 	Vec3 normal;
 
@@ -30,7 +30,7 @@ public:
 	std::vector<Edge>& getEdge() { return edge; }
 	Vertex getCenterCirclePoint() const { return circleCenter; }
 	const Vec3 getCenter() const { return circleCenter.GetPos(); }
-	const float getRadius() const { return radius; }
+	const double getRadius() const { return radius; }
 	Vec3 getNormal()const { return normal; }
 
 	void setPoints(Vertex* p1, Vertex* p2, Vertex* p3) { points.push_back(p1);
