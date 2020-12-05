@@ -30,6 +30,7 @@ public:
 	}
 
 	void setInterior() { exterior = false; }
+	void setExterior() { exterior = true; }
 	void reCalculateNormale() { normale = Vec3(edgePoints[1]->x - edgePoints[0]->x, -(edgePoints[1]->y - edgePoints[0]->y), 0); }
 	void calculateMiddle();
 	

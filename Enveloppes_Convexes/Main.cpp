@@ -329,11 +329,11 @@ void displayGUI()
 			pointsCloud.push_back(Vertex(0.02, -0.02, 0.02));
 			pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));*/
 
-			pointsCloud.push_back(Vertex(-0.43, -0.57, 0.0));
-			pointsCloud.push_back(Vertex(-0.4, 0.03, 0.0));
-			pointsCloud.push_back(Vertex(-0.38, 0.35, 0.0));
-			pointsCloud.push_back(Vertex(-0.3, -0.18, 0.0));
-			pointsCloud.push_back(Vertex(-0.35, 0.48, 0.0));
+			pointsCloud.push_back(Vertex(-0.36, 0.54, 0.0));
+			pointsCloud.push_back(Vertex(0.18, 0.66, 0.0));
+			pointsCloud.push_back(Vertex(0.34, -0.17, 0.0));
+			pointsCloud.push_back(Vertex(-0.14, -0.49, 0.0));
+			pointsCloud.push_back(Vertex(0.02, 0.09, 0.0));
 
 		}
 		//random
@@ -366,6 +366,10 @@ void displayGUI()
 	if (ImGui::Button("Triangulation Delaunay"))
 	{
 		triangulation = triangulateDelaunay(pointsCloud);
+	}
+	if (ImGui::Button("Noyau de Delaunay"))
+	{
+		triangulation = coreDelaunay(pointsCloud);
 	}
 	if(ImGui::Button("Diagramme de Voronoi"))
 	{

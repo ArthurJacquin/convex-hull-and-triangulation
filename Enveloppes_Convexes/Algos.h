@@ -19,4 +19,6 @@ bool PointInTriangle(Vertex pt, Vertex v1, Vertex v2, Vertex v3);
 
 Triangulation triangulateDelaunay(std::vector<Vertex>& S);
 
+Triangulation coreDelaunay(std::vector<Vertex>& S);
+
 Triangulation voronoiDiagram(std::vector<Vertex>& S);

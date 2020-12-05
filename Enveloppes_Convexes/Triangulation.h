@@ -25,6 +25,59 @@ struct Triangulation
 		}
 		return false;
 	}
+
+	int isPointInTriangulationIndex(Vertex p)
+	{
+		for (size_t i = 0; i < tri.size(); ++i)
+		{
+			//au cas ou si c'est sur une arete : que faire ?? 
+			if (tri[i].isPointInTriangle(p)) return i;
+		}
+		return -1;
+	}
+
+	int GetIndexEdge(Edge e)
+	{
+		for (size_t i = 0; i < edge.size(); i++)
+		{
+			if (e == edge[i]) return i;
+		}
+		return -1;
+	}
+
+	std::vector<int> GetEdgeIndexByTriangle(Tri triangle)
+	{
+		std::vector<int> index;
+		
+		for (size_t i = 0; i < triangle.getEdge().size(); i++)
+		{
+			for (size_t j = 0; j < edge.size(); j++)
+			{
+				if (triangle.getEdge()[i] == edge[j])
+				{
+					index.push_back(j);
+					break;
+				}
+			}
+		}
+
+		return index;
+	}
+
+	int GetTriangleIndexByEdge(Edge edge)
+	{
+		for (int t = 0; t < tri.size(); ++t)
+		{
+			for (int e = 0; e < tri[t].getEdge().size(); ++e)
+			{
+				if (edge == tri[t].getEdge()[e])
+				{
+					return t;
+				}
+			}
+		}
+		return -1;
+	}
 	
 	void clear()
 	{

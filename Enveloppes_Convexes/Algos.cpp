@@ -306,17 +306,11 @@ Vertex nearestVertex(Vertex v, std::vector<Vertex> tabV)
 bool isVisible(Vertex v, Edge e)
 {
 	Vec3 v1 = Vec3(v.x - e.getEdgePoints()[0]->x, v.y - e.getEdgePoints()[0]->y, 0);
+	
 	float dot = v1.dot(e.getNormale());
 	
-	//std::cerr << "produit scalaire entre : " << e.getEdgePoints()[0]->GetPos().x << "/" << e.getEdgePoints()[1]->GetPos().x << " et " << v1.x << "/" << v1.y << "====>" << dot << std::endl;
-	//std::cerr << "la normale :" << e.getNormale() << std::endl;
-
-	if (dot > FLT_EPSILON)
-	{
-		return true;
-	}
-	else
-		return false;
+	return dot > FLT_EPSILON;
+	
 }
 
 void checkIfEdgeExist(Edge e, vector<Edge>& edges)
@@ -394,19 +388,10 @@ Vertex projectPoint(Vertex A, Vertex B)
 bool critereDelaunay(Tri t1, Tri t2)
 {
 	bool exterior = false;
-	//std::cerr << "---------CRITERE-----------" << std::endl;
+	
 	for (int i = 0; i < t2.getPoints().size(); i++)
 	{
 		double dist = (t2.getPoints()[i]->GetPos() - t1.getCenter()).magnitude();
-		
-		//std::cerr << "distance avec " << t2.getPoints()[i]->GetPos() << " = " << dist << std::endl;
-		//std::cerr << "radius :  " << t1.getRadius() << std::endl;
-		//std::cerr << "----" << std::endl;
-
-		double v = t1.getRadius();
-		if (abs(dist - v) < 0.00001)
-			cout << "LA" << endl;
-
 
 		if (dist > t1.getRadius() + 0.00001)
 			exterior = true;
@@ -415,22 +400,11 @@ bool critereDelaunay(Tri t1, Tri t2)
 	for (int i = 0; i < t1.getPoints().size(); i++)
 	{
 		double dist = (t1.getPoints()[i]->GetPos() - t2.getCenter()).magnitude();
-
-		double v = t1.getRadius();
-		if (abs(dist - v) < 0.00001)
-			cout << "LA" << endl;
-		//std::cerr << "distance avec " << t2.getPoints()[i]->GetPos() << " = " << dist << std::endl;
-		//std::cerr << "radius :  " << t1.getRadius() << std::endl;
-		//std::cerr << "----" << std::endl;
-
-		if (dist > t2.getRadius() + DBL_EPSILON)
+		if (dist > t2.getRadius() + 0.00001)
 			exterior = true;
 	}
 
-	if (exterior)
-		return true;
-	else
-		return false;
+	return exterior;
 }
 
 //Delaunay algorithm
@@ -502,6 +476,110 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 	} while (done);
 
 	return laTri;
+}
+
+Triangulation coreDelaunay(std::vector<Vertex>& S)
+{
+	Triangulation coreDelaunay;
+	
+	if (S.size() <= 1)
+		return coreDelaunay;
+	
+	
+	if (S.size() == 2)
+	{
+		Edge edge1 = Edge(&S[0], &S[1]);
+		coreDelaunay.edge.push_back(edge1);
+		return coreDelaunay;
+	}
+
+	Tri triangle1 = Tri(&S[0], &S[1], &S[2]);
+
+	for (size_t i = 0; i <3; i++)
+	{
+		coreDelaunay.edge.push_back(triangle1.getEdge()[i]);
+	}
+	
+	coreDelaunay.tri.push_back(triangle1);
+	
+	if (S.size() == 3)
+		return coreDelaunay;
+
+	std::vector<Edge> L;
+	
+	for (size_t p = 3; p < S.size(); ++p)
+	{
+
+		//initialisation de L avec toutes les edge
+		L.clear();
+		int triIndex = coreDelaunay.isPointInTriangulationIndex(S[p]);
+		if(triIndex != -1)
+		{
+			std::vector<int> indexEdges = coreDelaunay.GetEdgeIndexByTriangle(coreDelaunay.tri[triIndex]);
+			for (size_t idx = 0; idx < indexEdges.size(); idx++)
+			{
+				L.push_back(coreDelaunay.edge[idx]);
+			}
+			coreDelaunay.tri.erase(coreDelaunay.tri.begin() + triIndex);
+		}
+		else
+		{
+			for (size_t edgeIdx = 0; edgeIdx < coreDelaunay.edge.size(); edgeIdx++)
+			{
+				bool inTriangle = coreDelaunay.GetTriangleIndexByEdge(coreDelaunay.edge[edgeIdx]) != -1;
+
+				if (!inTriangle) 
+					L.push_back(coreDelaunay.edge[edgeIdx]);
+				else if(isVisible(S[p], coreDelaunay.edge[edgeIdx]) && coreDelaunay.edge[edgeIdx].getExterior())
+				{
+					L.push_back(coreDelaunay.edge[edgeIdx]);
+				}
+			}
+		}
+
+		while(L.size() > 0)
+		{
+			Edge currentEdge = L[L.size() - 1];
+			L.erase(L.end() - 1);
+			
+			int indexTriangle = coreDelaunay.GetTriangleIndexByEdge(currentEdge);
+			int currentEdgeIdx = coreDelaunay.GetIndexEdge(currentEdge);
+			
+			//cas ou l'edge appartient a un triangle et le point est dans son cercle circonscrit
+			if (indexTriangle != -1 && coreDelaunay.tri[indexTriangle].isPointInCircle(S[p]))
+			{
+				coreDelaunay.edge.erase(coreDelaunay.edge.begin() + currentEdgeIdx);
+				for (size_t e = 0; e < 3; e++)
+				{
+					if (coreDelaunay.tri[indexTriangle].getEdge()[e] != currentEdge)
+					{
+						coreDelaunay.tri[indexTriangle].getEdge()[e].setExterior();
+						L.push_back(coreDelaunay.tri[indexTriangle].getEdge()[e]);
+					}
+				}
+				coreDelaunay.tri.erase(coreDelaunay.tri.begin() + indexTriangle);
+			}
+			else
+			{
+				//triangle avec le nouveau point
+				Tri newTriangle = Tri(currentEdge.getEdgePoints()[0],
+					&S[p],
+					currentEdge.getEdgePoints()[1]);
+				coreDelaunay.tri.push_back(newTriangle);
+
+				for (size_t edge = 0; edge < 3; edge++)
+				{
+					if(currentEdge != newTriangle.getEdge()[edge])
+						checkIfEdgeExist(newTriangle.getEdge()[edge], coreDelaunay.edge);
+				}
+				
+				if(indexTriangle != -1)
+					coreDelaunay.edge[currentEdgeIdx].setInterior();
+			}
+		}
+	}
+	
+	return coreDelaunay;
 }
 
 //Voronoi from Delaunay algorithm
