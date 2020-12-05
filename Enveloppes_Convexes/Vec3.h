@@ -8,11 +8,11 @@ class Vec3 {
 public:
 
 	union {
-		float data[3];
+		double data[3];
 		struct {
-			float x;
-			float y;
-			float z;
+			double x;
+			double y;
+			double z;
 		};
 	};
 
@@ -26,14 +26,14 @@ public:
 	}
 
 	// Construct with values, 3D
-	Vec3(float ax, float ay, float az) {
+	Vec3(double ax, double ay, double az) {
 		x = ax;
 		y = ay;
 		z = az;
 	}
 
 	// Construct with values, 2D
-	Vec3(float ax, float ay) {
+	Vec3(double ax, double ay) {
 		x = ax;
 		y = ay;
 		z = 0;
@@ -87,11 +87,11 @@ public:
 
 	// Multiplication by scalars
 
-	Vec3 operator*(const float s) {
+	Vec3 operator*(const double s) {
 		return Vec3(x * s, y * s, z * s);
 	}
 
-	Vec3& operator*=(const float s) {
+	Vec3& operator*=(const double s) {
 		x *= s;
 		y *= s;
 		z *= s;
@@ -100,11 +100,11 @@ public:
 
 	// Division by scalars
 
-	Vec3 operator/(const float s) {
+	Vec3 operator/(const double s) {
 		return Vec3(x / s, y / s, z / s);
 	}
 
-	Vec3& operator/=(const float s) {
+	Vec3& operator/=(const double s) {
 		x /= s;
 		y /= s;
 		z /= s;
@@ -113,7 +113,7 @@ public:
 
 	// Dot product
 
-	float operator*(const Vec3 o) {
+	double operator*(const Vec3 o) {
 		return (x * o.x) + (y * o.y) + (z * o.z);
 	}
 
@@ -123,62 +123,62 @@ public:
 	// Cross product
 
 	Vec3 operator^(const Vec3 o) {
-		float nx = y * o.z - o.y * z;
-		float ny = z * o.x - o.z * x;
-		float nz = x * o.y - o.x * y;
+		double nx = y * o.z - o.y * z;
+		double ny = z * o.x - o.z * x;
+		double nz = x * o.y - o.x * y;
 		return Vec3(nx, ny, nz);
 	}
 
 	Vec3& operator^=(const Vec3 o) {
-		float nx = y * o.z - o.y * z;
-		float ny = z * o.x - o.z * x;
-		float nz = x * o.y - o.x * y;
+		double nx = y * o.z - o.y * z;
+		double ny = z * o.x - o.z * x;
+		double nz = x * o.y - o.x * y;
 		x = nx;
 		y = ny;
 		z = nz;
 		return *this;
 	}
 
-	float getDeterminant(const Vec3 o) {
+	double getDeterminant(const Vec3 o) {
 		return x * o.y - y * o.x;
 	}
 
 	// Other functions
 
 	// Length of vector
-	float magnitude() {
+	double magnitude() {
 		return sqrt(magnitude_sqr());
 	}
 
 	// Length of vector squared
-	float magnitude_sqr() {
+	double magnitude_sqr() {
 		return (x * x) + (y * y) + (z * z);
 	}
 
 	// Modified the vector so it becomes normalised
 	Vec3& normalise() {
-		float invLength = 1 / sqrtf(x * x + y * y + z * z);
+		double invLength = 1 / sqrtf(x * x + y * y + z * z);
 		x *= invLength;
 		y *= invLength;
 		z *= invLength;
 		return *this;
 	}
 
-	float dot(Vec3 b) {
+	double dot(Vec3 b) {
 		return (*this).x * b.x + (*this).y * b.y + (*this).z * b.z;
 	}
 
 	//return the angle between 2 vectors in radians
-	float Angle(Vec3 b)
+	double Angle(Vec3 b)
 	{
-		float alpha = acos(this->dot(b) / (this->magnitude() * b.magnitude()));
+		double alpha = acos(this->dot(b) / (this->magnitude() * b.magnitude()));
 		return alpha;
 	}
 
-	float AngleClockwise(Vec3 b)
+	double AngleClockwise(Vec3 b)
 	{
-		float det = (*this).x * b.y - (*this).y * b.x;
-		float alpha = atan2(det, this->dot(b));
+		double det = (*this).x * b.y - (*this).y * b.x;
+		double alpha = atan2(det, this->dot(b));
 		return alpha;
 	}
 

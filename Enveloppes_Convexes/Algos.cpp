@@ -379,25 +379,15 @@ Triangulation triangulateIncremental(std::vector<Vertex>& S)
 	return laTri;
 }
 
-//Check if point is in triangle
-float sign(Vertex p1, Vertex p2, Vertex p3)
+Vertex projectPoint(Vertex A, Vertex B)
 {
-	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-}
+	Vec3 projectPoint = Vec3(A.x, A.y, A.z);
+	Vec3 referencePt = Vec3(B.x, B.y, B.z);
 
-bool PointInTriangle(Vertex pt, Vertex v1, Vertex v2, Vertex v3)
-{
-	float d1, d2, d3;
-	bool has_neg, has_pos;
+	Vec3 dir = referencePt - projectPoint;
+	Vec3 result = projectPoint + dir * 100;
 
-	d1 = sign(pt, v1, v2);
-	d2 = sign(pt, v2, v3);
-	d3 = sign(pt, v3, v1);
-
-	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
-	return !(has_neg && has_pos);
+	return Vertex(result.x, result.y, 0, 1, 0, 1);
 }
 
 //check si le troisième point est dans le cercle circonscrit
@@ -407,13 +397,33 @@ bool critereDelaunay(Tri t1, Tri t2)
 	//std::cerr << "---------CRITERE-----------" << std::endl;
 	for (int i = 0; i < t2.getPoints().size(); i++)
 	{
-		float dist = (t2.getPoints()[i]->GetPos() - t1.getCenter()).magnitude();
+		double dist = (t2.getPoints()[i]->GetPos() - t1.getCenter()).magnitude();
 		
 		//std::cerr << "distance avec " << t2.getPoints()[i]->GetPos() << " = " << dist << std::endl;
 		//std::cerr << "radius :  " << t1.getRadius() << std::endl;
 		//std::cerr << "----" << std::endl;
 
-		if (dist > t1.getRadius() + FLT_EPSILON)
+		double v = t1.getRadius();
+		if (abs(dist - v) < 0.00001)
+			cout << "LA" << endl;
+
+
+		if (dist > t1.getRadius() + 0.00001)
+			exterior = true;
+	}
+
+	for (int i = 0; i < t1.getPoints().size(); i++)
+	{
+		double dist = (t1.getPoints()[i]->GetPos() - t2.getCenter()).magnitude();
+
+		double v = t1.getRadius();
+		if (abs(dist - v) < 0.00001)
+			cout << "LA" << endl;
+		//std::cerr << "distance avec " << t2.getPoints()[i]->GetPos() << " = " << dist << std::endl;
+		//std::cerr << "radius :  " << t1.getRadius() << std::endl;
+		//std::cerr << "----" << std::endl;
+
+		if (dist > t2.getRadius() + DBL_EPSILON)
 			exterior = true;
 	}
 
@@ -428,56 +438,148 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 {
 	Triangulation laTri = triangulateIncremental(S);
 
-	//flipping d'arete
-	for (int i = 0; i < laTri.edge.size(); ++i)
+	bool done = false;
+	do
 	{
-		if (laTri.edge[i].getExterior() == true)
-			continue;
-
-		std::vector<int> indexTri;
-		std::vector<Vertex*> vertexNotInEdge;
-
-		//parcours des triangles pour trouver le triangle avec son double
-		for (int t = 0; t < laTri.tri.size(); t++)
+		done = false;
+		//flipping d'arete
+		for (int i = 0; i < laTri.edge.size(); ++i)
 		{
-			for (int e = 0; e < laTri.tri[t].getEdge().size(); e++)
-			{
-				if (laTri.edge[i] == laTri.tri[t].getEdge()[e])
-				{
-					indexTri.push_back(t);
-				}
-			}
-		}
+			if (laTri.edge[i].getExterior() == true)
+				continue;
 
-		if (indexTri.size() > 1)
-		{
-			//parcours sur les triangles qui sont sur l'edge pour stocker les vertices différents de l'edge
-			for(int j = 0; j < 2; ++j)
+			std::vector<int> indexTri;
+			std::vector<Vertex*> vertexNotInEdge;
+
+			//parcours des triangles pour trouver le triangle avec son double
+			for (int t = 0; t < laTri.tri.size(); t++)
 			{
-				for (int k = 0; k < 3; ++k)
+				for (int e = 0; e < laTri.tri[t].getEdge().size(); e++)
 				{
-					if (laTri.tri[indexTri[j]].getPoints()[k] != laTri.edge[i].getEdgePoints()[0]
-						&& laTri.tri[indexTri[j]].getPoints()[k] != laTri.edge[i].getEdgePoints()[1])
+					if (laTri.edge[i] == laTri.tri[t].getEdge()[e])
 					{
-						vertexNotInEdge.push_back(laTri.tri[indexTri[j]].getPoints()[k]);
-						break;
+						indexTri.push_back(t);
 					}
 				}
 			}
 
-
-			//flipping d'arete
-			if (critereDelaunay(laTri.tri[indexTri[0]], laTri.tri[indexTri[1]]) == false)
+			if (indexTri.size() > 1)
 			{
-				Edge newEdge = Edge(vertexNotInEdge[0], vertexNotInEdge[1]);
-				laTri.edge[i] = newEdge;
-				
-				//DEBUG : point en vert
-				//newEdge.getEdgePoints()[0]->setColor(Color(0, 1, 0));
-				//newEdge.getEdgePoints()[1]->setColor(Color(0, 1, 0));
+				//parcours sur les triangles qui sont sur l'edge pour stocker les vertices différents de l'edge
+				for (int j = 0; j < 2; ++j)
+				{
+					for (int k = 0; k < 3; ++k)
+					{
+						if (laTri.tri[indexTri[j]].getPoints()[k] != laTri.edge[i].getEdgePoints()[0]
+							&& laTri.tri[indexTri[j]].getPoints()[k] != laTri.edge[i].getEdgePoints()[1])
+						{
+							vertexNotInEdge.push_back(laTri.tri[indexTri[j]].getPoints()[k]);
+							break;
+						}
+					}
+				}
+
+
+				//flipping d'arete
+				if (critereDelaunay(laTri.tri[indexTri[0]], laTri.tri[indexTri[1]]) == false)
+				{
+					//New triangles
+					laTri.tri[indexTri[0]] = Tri(vertexNotInEdge[0], vertexNotInEdge[1], laTri.edge[i].getEdgePoints()[0]);
+					laTri.tri[indexTri[1]] = Tri(vertexNotInEdge[0], vertexNotInEdge[1], laTri.edge[i].getEdgePoints()[1]);
+
+					//New edge
+					Edge newEdge = Edge(vertexNotInEdge[0], vertexNotInEdge[1]);
+					newEdge.setInterior();
+					laTri.edge[i] = newEdge;
+
+					done = true;
+					//DEBUG : point en vert
+					//newEdge.getEdgePoints()[0]->setColor(Color(0, 1, 0));
+					//newEdge.getEdgePoints()[1]->setColor(Color(0, 1, 0));
+				}
 			}
+		}
+	} while (done);
+
+	return laTri;
+}
+
+//Voronoi from Delaunay algorithm
+Triangulation voronoiDiagram(std::vector<Vertex>& S)
+{	
+	Triangulation delaunay = triangulateDelaunay(S);
+
+	std::vector<Edge> voronoiEdge;
+	
+	for (int i = 0; i < delaunay.edge.size(); ++i)
+	{
+		if (delaunay.edge[i].getExterior() == true)
+		{
+			int indexTriangle = 0;
+			
+			//trouver le triangle qui utilise cette edge
+			for(int t = 0; t < delaunay.tri.size(); ++t)
+			{
+				for(int e = 0; e < delaunay.tri[t].getEdge().size(); ++e)
+				{
+					if(delaunay.edge[i] == delaunay.tri[t].getEdge()[e])
+					{
+						indexTriangle = t;
+						break;
+					}
+				}
+			}
+			
+			S.emplace_back(Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint()));
+			if (delaunay.isPointInTriangulation(delaunay.tri[indexTriangle].getCenterCirclePoint()))
+			{
+				
+				S.emplace_back(projectPoint(Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint()), Vertex(delaunay.edge[i].getMiddleEdgePoint())));
+			}
+			else
+			{
+				//projection du milieu de l'edge de l'autre côté
+				S.emplace_back(projectPoint(Vertex(delaunay.edge[i].getMiddleEdgePoint()), Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint())));
+			}			
+			
+			Edge edge = Edge(&S[S.size() - 1], &S[S.size() - 2]);
+			
+			voronoiEdge.push_back(edge);
+		}
+		else
+		{
+			std::vector<int> indexTriangle;
+
+			//trouver les deux triangles qui utilisent cette edge
+			for (int t = 0; t < delaunay.tri.size(); ++t)
+			{
+				for (int e = 0; e < delaunay.tri[t].getEdge().size(); ++e)
+				{
+					if (delaunay.edge[i] == delaunay.tri[t].getEdge()[e])
+					{
+						indexTriangle.push_back(t);
+					}
+				}
+			}
+
+			if (indexTriangle.size() < 2) continue;
+
+			S.emplace_back(Vertex(delaunay.tri[indexTriangle[0]].getCenterCirclePoint()));
+			S.emplace_back(Vertex(delaunay.tri[indexTriangle[1]].getCenterCirclePoint()));
+			
+			Edge edge = Edge(&S[S.size() - 1], &S[S.size() - 2]);
+
+			voronoiEdge.push_back(edge);
+			
 		}
 	}
 
-	return laTri;
+	for(int i = 0; i < voronoiEdge.size(); ++i)
+	{
+		delaunay.edge.emplace_back(voronoiEdge[i]);
+	}
+
+	Triangulation voronoi;
+	voronoi.edge = voronoiEdge;
+	return delaunay;
 }

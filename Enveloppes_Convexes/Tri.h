@@ -14,8 +14,8 @@ private:
 	std::vector<Edge> edge;
 	//bool clockwise;
 
-	Vec3 center;
-	float radius;
+	Vertex circleCenter;
+	double radius;
 
 	Vec3 normal;
 
@@ -28,8 +28,9 @@ public:
 	const std::vector<Vertex*> getPoints() const { return points; }
 	const std::vector<Tri*> getNeighorTri() const { return neighorTri; }
 	std::vector<Edge>& getEdge() { return edge; }
-	const Vec3 getCenter() const { return center; }
-	const float getRadius() const { return radius; }
+	Vertex getCenterCirclePoint() const { return circleCenter; }
+	const Vec3 getCenter() const { return circleCenter.GetPos(); }
+	const double getRadius() const { return radius; }
 	Vec3 getNormal()const { return normal; }
 
 	void setPoints(Vertex* p1, Vertex* p2, Vertex* p3) { points.push_back(p1);
@@ -42,6 +43,8 @@ public:
 	void updateBufferPoints();
 
 	void cercleCirconscrit();
-
+	
+	bool isPointInTriangle(Vertex p) const;
+	
 	bool operator==(Tri t);
 };

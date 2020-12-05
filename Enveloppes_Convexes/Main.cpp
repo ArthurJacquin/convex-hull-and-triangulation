@@ -80,20 +80,20 @@ bool Initialise() {
 		std::cout << "erreur d'initialisation de GLEW!"
 			<< std::endl;
 	}
-
+	
 	std::cout << "Version : " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "Vendor : " << glGetString(GL_VENDOR) << std::endl;
 	std::cout << "Renderer : " << glGetString(GL_RENDERER) << std::endl;
-
+	
 	//Init shaders
 	BasicShader.LoadVertexShader("Basic.vs.glsl");
 	BasicShader.LoadFragmentShader("Basic.fs.glsl");
 	BasicShader.Create();
-
+	
 	//Init Program
 	GLuint64 BasicProgram = BasicShader.GetProgram();
 	glUseProgram(BasicProgram);
-
+	
 	modelMatrixLocation = glGetUniformLocation(BasicProgram, "u_modelMatrix");
 	viewMatrixLocation = glGetUniformLocation(BasicProgram, "u_viewMatrix");
 	projectionMatrixLocation = glGetUniformLocation(BasicProgram, "u_projectionMatrix");
@@ -101,7 +101,7 @@ bool Initialise() {
 	enable3DViewportLocation = glGetUniformLocation(BasicProgram, "u_enable3DViewport");
 	enableNormalLocation = glGetUniformLocation(BasicProgram, "u_enabledNormal");
 	cameraPos_location = glGetUniformLocation(BasicProgram, "u_camPos");
-
+	
 	return true;
 }
 
@@ -204,7 +204,6 @@ void Display(GLFWwindow* window)
 	glDrawArrays(GL_POINTS, 0, pointsCloud.size());
 
 	//Draw convex Envelope
-
 	for (int i = 0; i < convexEnv.size(); i++)
 	{
 		VBOCurrent = convexEnv[i].GetVBO();
@@ -318,7 +317,7 @@ void displayGUI()
 		//pour le debug
 		if (pointsCloud.size() < 1)
 		{
-			pointsCloud.push_back(Vertex(-0.04, -0.02, -0.02));
+			/*pointsCloud.push_back(Vertex(-0.04, -0.02, -0.02));
 			pointsCloud.push_back(Vertex(-0.03, 0.02, -0.02));
 			pointsCloud.push_back(Vertex(0.03, -0.02, -0.02));
 			pointsCloud.push_back(Vertex(0.04, 0.02, -0.02));
@@ -328,8 +327,13 @@ void displayGUI()
 			pointsCloud.push_back(Vertex(-0.02, -0.02, 0.02));
 			pointsCloud.push_back(Vertex(-0.02, 0.02, 0.02));
 			pointsCloud.push_back(Vertex(0.02, -0.02, 0.02));
-			pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));
+			pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));*/
 
+			pointsCloud.push_back(Vertex(-0.43, -0.57, 0.0));
+			pointsCloud.push_back(Vertex(-0.4, 0.03, 0.0));
+			pointsCloud.push_back(Vertex(-0.38, 0.35, 0.0));
+			pointsCloud.push_back(Vertex(-0.3, -0.18, 0.0));
+			pointsCloud.push_back(Vertex(-0.35, 0.48, 0.0));
 
 		}
 		//random
@@ -362,6 +366,10 @@ void displayGUI()
 	if (ImGui::Button("Triangulation Delaunay"))
 	{
 		triangulation = triangulateDelaunay(pointsCloud);
+	}
+	if(ImGui::Button("Diagramme de Voronoi"))
+	{
+		triangulation = voronoiDiagram(pointsCloud);
 	}
 
 	ImGui::Separator();
