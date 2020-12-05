@@ -8,13 +8,13 @@
 
 extern int width, height;
 extern std::vector<Vertex> pointsCloud;
+extern std::vector<int> selectedPoints;
 
 extern Color choosedColor;
 extern float step;
 extern bool movingPoint;
 
 extern int selectedPointId;
-
 
 bool wantToMovePoint;
 bool enable3DViewport;
@@ -50,7 +50,17 @@ float Input::getDistance(float xa, float ya, Vertex v)
 
 void Input::select(float x, float y)
 {
-	//TODO : select point
+	float minDist = 99999.9f;
+
+	for(int i = 0; i < pointsCloud.size(); ++i)
+	{
+		float d = getDistance(x, y, pointsCloud[i]);
+		if (d < minDist)
+		{
+			minDist = d;
+			selectedPointId = i;
+		}
+	}
 }
 
 void Input::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -68,41 +78,23 @@ void Input::mouse_button_callback(GLFWwindow* window, int button, int action, in
 		}
 	}
 
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) // Move point
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
 	{
-		//TODO : move point
-	}
-
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) //Stop moving a point
-	{
-		if (movingPoint) 
+		if (pointsCloud.size() != 0)
 		{
-			movingPoint = false;
+			select(-1.0f + 2 * xpos / width, 1.0f - 2 * ypos / height);
+
+			if (std::find(selectedPoints.begin(), selectedPoints.end(), selectedPointId) == selectedPoints.end())
+			{
+				selectedPoints.push_back(selectedPointId);
+				pointsCloud[selectedPointId].setColor(Color(0.0f, 1.0f, 0.0f));
+			}
 		}
 	}
 }
 
 void Input::keyboard_button_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	/*if (key == GLFW_KEY_ENTER && action == GLFW_PRESS || key == GLFW_KEY_KP_ENTER && action == GLFW_PRESS) // Finish shape
-	{
-		if (pointsCloud.size() > 2)
-		{
-			//TODO : Create shape
-			pointsCloud.clear();
-		}
-	}*/
-
-	if (key == GLFW_KEY_LEFT_ALT && action == GLFW_PRESS) // Enable point movement
-	{
-		wantToMovePoint = true;
-	}
-
-	if (key == GLFW_KEY_LEFT_ALT && action == GLFW_RELEASE) // Disable point movement
-	{
-		wantToMovePoint = false;
-	}
-
 	if (key == GLFW_KEY_BACKSPACE && action == GLFW_PRESS) // Clear scene
 	{
 		selectedPointId = NULL;

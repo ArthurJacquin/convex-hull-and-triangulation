@@ -53,6 +53,8 @@ std::vector<ConvexEnvelope3D> convexEnv3D;
 std::vector<Mesh> meshes;
 Triangulation triangulation;
 
+std::vector<int> selectedPoints;
+
 bool movingPoint;
 int selectedPointId;
 
@@ -304,7 +306,7 @@ void displayGUI()
 		convexEnv.push_back(Jarvis(pointsCloud));
 	}
 
-	if(ImGui::Button("GrahamScan"))
+	if (ImGui::Button("GrahamScan"))
 	{
 		convexEnv.push_back(GrahamScan(pointsCloud));
 	}
@@ -314,40 +316,14 @@ void displayGUI()
 
 	if (ImGui::Button("Generate 3D cloud"))
 	{
-		//pour le debug
-		if (pointsCloud.size() < 1)
+		pointsCloud.clear();
+		for (int i = 0; i < taille; ++i)
 		{
-			/*pointsCloud.push_back(Vertex(-0.04, -0.02, -0.02));
-			pointsCloud.push_back(Vertex(-0.03, 0.02, -0.02));
-			pointsCloud.push_back(Vertex(0.03, -0.02, -0.02));
-			pointsCloud.push_back(Vertex(0.04, 0.02, -0.02));
+			double x = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
+			double y = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
+			double z = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
 
-			pointsCloud.push_back(Vertex(0, 0, 0));
-
-			pointsCloud.push_back(Vertex(-0.02, -0.02, 0.02));
-			pointsCloud.push_back(Vertex(-0.02, 0.02, 0.02));
-			pointsCloud.push_back(Vertex(0.02, -0.02, 0.02));
-			pointsCloud.push_back(Vertex(0.02, 0.02, 0.02));*/
-
-			pointsCloud.push_back(Vertex(-0.36, 0.54, 0.0));
-			pointsCloud.push_back(Vertex(0.18, 0.66, 0.0));
-			pointsCloud.push_back(Vertex(0.34, -0.17, 0.0));
-			pointsCloud.push_back(Vertex(-0.14, -0.49, 0.0));
-			pointsCloud.push_back(Vertex(0.02, 0.09, 0.0));
-
-		}
-		//random
-		else
-		{
-			pointsCloud.clear();
-			for (int i = 0; i < taille; ++i)
-			{
-				double x = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
-				double y = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
-				double z = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
-
-				pointsCloud.push_back(Vertex(x, y, z));
-			}
+			pointsCloud.push_back(Vertex(x, y, z));
 		}
 	}
 
@@ -371,7 +347,7 @@ void displayGUI()
 	{
 		triangulation = coreDelaunay(pointsCloud);
 	}
-	if(ImGui::Button("Diagramme de Voronoi"))
+	if (ImGui::Button("Diagramme de Voronoi"))
 	{
 		triangulation = voronoiDiagram(pointsCloud);
 	}
@@ -410,6 +386,7 @@ void displayGUI()
 		meshes.clear();
 		triangulation.clear();
 		convexEnv3D.clear();
+		selectedPoints.clear();
 	}
 
 	ImGui::End();
@@ -418,6 +395,7 @@ void displayGUI()
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
 
 //Main
 int main(void)
