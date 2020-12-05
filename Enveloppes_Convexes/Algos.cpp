@@ -373,17 +373,6 @@ Triangulation triangulateIncremental(std::vector<Vertex>& S)
 	return laTri;
 }
 
-Vertex projectPoint(Vertex A, Vertex B)
-{
-	Vec3 projectPoint = Vec3(A.x, A.y, A.z);
-	Vec3 referencePt = Vec3(B.x, B.y, B.z);
-
-	Vec3 dir = referencePt - projectPoint;
-	Vec3 result = projectPoint + dir * 100;
-
-	return Vertex(result.x, result.y, 0, 1, 0, 1);
-}
-
 //check si le troisième point est dans le cercle circonscrit
 bool critereDelaunay(Tri t1, Tri t2)
 {
@@ -518,7 +507,7 @@ Triangulation coreDelaunay(std::vector<Vertex>& S)
 			std::vector<int> indexEdges = coreDelaunay.GetEdgeIndexByTriangle(coreDelaunay.tri[triIndex]);
 			for (size_t idx = 0; idx < indexEdges.size(); idx++)
 			{
-				L.push_back(coreDelaunay.edge[idx]);
+				L.push_back(coreDelaunay.edge[indexEdges[idx]]);
 			}
 			coreDelaunay.tri.erase(coreDelaunay.tri.begin() + triIndex);
 		}
@@ -585,7 +574,7 @@ Triangulation coreDelaunay(std::vector<Vertex>& S)
 //Voronoi from Delaunay algorithm
 Triangulation voronoiDiagram(std::vector<Vertex>& S)
 {	
-	Triangulation delaunay = triangulateDelaunay(S);
+	Triangulation delaunay = coreDelaunay(S);
 
 	std::vector<Edge> voronoiEdge;
 	
@@ -609,17 +598,10 @@ Triangulation voronoiDiagram(std::vector<Vertex>& S)
 			}
 			
 			S.emplace_back(Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint()));
-			if (delaunay.isPointInTriangulation(delaunay.tri[indexTriangle].getCenterCirclePoint()))
-			{
-				
-				S.emplace_back(projectPoint(Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint()), Vertex(delaunay.edge[i].getMiddleEdgePoint())));
-			}
-			else
-			{
-				//projection du milieu de l'edge de l'autre côté
-				S.emplace_back(projectPoint(Vertex(delaunay.edge[i].getMiddleEdgePoint()), Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint())));
-			}			
-			
+
+			Vec3 pos = delaunay.edge[i].getMiddleEdgePoint().GetPos() + delaunay.edge[i].getNormale() * 10;
+			S.emplace_back(Vertex(pos.x, pos.y, pos.z, 1, 0, 1));
+
 			Edge edge = Edge(&S[S.size() - 1], &S[S.size() - 2]);
 			
 			voronoiEdge.push_back(edge);
