@@ -379,36 +379,15 @@ Triangulation triangulateIncremental(std::vector<Vertex>& S)
 	return laTri;
 }
 
-//Check if point is in triangle
-float sign(Vertex p1, Vertex p2, Vertex p3)
-{
-	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-}
-
-bool PointInTriangle(Vertex pt, Vertex v1, Vertex v2, Vertex v3)
-{
-	float d1, d2, d3;
-	bool has_neg, has_pos;
-
-	d1 = sign(pt, v1, v2);
-	d2 = sign(pt, v2, v3);
-	d3 = sign(pt, v3, v1);
-
-	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
-	return !(has_neg && has_pos);
-}
-
-Vertex projectPoint(Vertex A, Vertex B, int factor)
+Vertex projectPoint(Vertex A, Vertex B)
 {
 	Vec3 projectPoint = Vec3(A.x, A.y, A.z);
 	Vec3 referencePt = Vec3(B.x, B.y, B.z);
 
 	Vec3 dir = referencePt - projectPoint;
-	Vec3 result = projectPoint + dir * factor;
+	Vec3 result = projectPoint + dir * 100;
 
-	return Vertex(result.x, result.y, 0, 0, 1, 0);
+	return Vertex(result.x, result.y, 0, 1, 0, 1);
 }
 
 //check si le troisième point est dans le cercle circonscrit
@@ -555,12 +534,12 @@ Triangulation voronoiDiagram(std::vector<Vertex>& S)
 			if (delaunay.isPointInTriangulation(delaunay.tri[indexTriangle].getCenterCirclePoint()))
 			{
 				
-				S.emplace_back(projectPoint(Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint()), Vertex(delaunay.edge[i].getMiddleEdgePoint()),10));
+				S.emplace_back(projectPoint(Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint()), Vertex(delaunay.edge[i].getMiddleEdgePoint())));
 			}
 			else
 			{
 				//projection du milieu de l'edge de l'autre côté
-				S.emplace_back(projectPoint(Vertex(delaunay.edge[i].getMiddleEdgePoint()), Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint()), 10));
+				S.emplace_back(projectPoint(Vertex(delaunay.edge[i].getMiddleEdgePoint()), Vertex(delaunay.tri[indexTriangle].getCenterCirclePoint())));
 			}			
 			
 			Edge edge = Edge(&S[S.size() - 1], &S[S.size() - 2]);

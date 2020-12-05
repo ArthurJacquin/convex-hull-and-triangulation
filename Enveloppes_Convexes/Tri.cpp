@@ -52,28 +52,6 @@ Tri::Tri(Vertex* p1, Vertex* p2, Vertex* p3)
 
 void Tri::cercleCirconscrit()
 {
-	/*Vec3 AB = Vec3(points[1]->x - points[0]->x, points[1]->y - points[0]->y, 0);
-	Vec3 AC = Vec3(points[2]->x - points[0]->x, points[2]->y - points[0]->y, 0);
-
-	Vec3 mediatriceAB = Vec3((points[0]->x + points[1]->x) / 2, (points[0]->y + points[1]->y) / 2, 0);
-	Vec3 mediatriceAC = Vec3((points[0]->x + points[2]->x) / 2, (points[0]->y + points[2]->y) / 2, 0);
-
-	float det = AB.x * AC.y - AB.y * AC.x;
-	
-	float centreX = (AC.y * (AB.x * mediatriceAB.x + AB.y * mediatriceAB.y) - AB.y * (AC.x * mediatriceAC.x + AC.y * mediatriceAC.y)) / det;
-	float centreY = (-AC.x * (AB.x * mediatriceAB.x + AB.y * mediatriceAB.y) + AB.x * (AC.x * mediatriceAC.x + AC.y * mediatriceAC.y)) / det;
-	
-	circleCenter = Vertex(centreX, centreY, 0, 1.0, 0, 1.0);
-	radius = (points[0]->GetPos() - circleCenter.GetPos()).magnitude();*/
-
-	/*
-	std::cerr << " ----" << std::endl;
-	for (size_t i = 0; i < points.size(); i++)
-	{
-		std::cerr << (points[i]->GetPos() - center).magnitude() << std::endl;
-	}
-	*/
-
 	double yDelta_a = points[1]->y - points[0]->y;
 	double xDelta_a = points[1]->x - points[0]->x;
 	double yDelta_b = points[2]->y - points[1]->y;
