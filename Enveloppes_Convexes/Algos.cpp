@@ -2,6 +2,12 @@
 #include <algorithm>
 #include "Vec3.h"
 
+
+#pragma region Enveloppe Convex
+
+/// <summary>
+/// Find the barycenter of all the given points
+/// </summary>
 Vertex FindBarycenter(std::vector<Vertex> S)
 {
 	size_t const size = S.size();
@@ -26,8 +32,9 @@ Vertex FindBarycenter(std::vector<Vertex> S)
 	return Vertex(avg_x, avg_y, avg_z);
 }
 
-
-//-------------------------------------Enveloppe Convex------------------------------------------
+/// <summary>
+/// Generate the convex envelope using Jarvis algorithme
+/// </summary>
 ConvexEnvelope Jarvis(std::vector<Vertex>& S)
 {
 	int i0 = 0;
@@ -96,6 +103,9 @@ ConvexEnvelope Jarvis(std::vector<Vertex>& S)
 	return envelope;
 }
 
+/// <summary>
+/// Generate the convex envelope using Graham Scan algorithme
+/// </summary>
 ConvexEnvelope GrahamScan(std::vector<Vertex>& S)
 {
 	size_t const size = S.size();
@@ -185,7 +195,14 @@ ConvexEnvelope GrahamScan(std::vector<Vertex>& S)
 	return envelope;
 }
 
-//-------------------------------------Enveloppe Convex 3D------------------------------------------
+#pragma endregion
+
+
+#pragma region Enveloppe Convex 3D
+
+/// <summary>
+/// Check if the triangle "t" is in the vector "tris"
+/// </summary>
 int checkIfTriExist(Tri t, vector<Tri> tris)
 {
 	for (size_t i = 0; i < tris.size(); i++)
@@ -197,6 +214,35 @@ int checkIfTriExist(Tri t, vector<Tri> tris)
 	return -1;
 }
 
+/// <summary>
+/// Find the nearest vertex of "v" in "tabV"
+/// </summary>
+Vertex nearestVertex(Vertex v, std::vector<Vertex> tabV)
+{
+	Vertex vNear;
+	float min = 10000.f;
+	float distance = 5000.f;
+	for (int i = 0; i < tabV.size(); ++i)
+	{
+		if (tabV[i] != v)
+		{
+
+			distance = v.Distance(tabV[i]);
+
+			if (distance < min)
+			{
+				min = distance;
+				vNear = tabV[i];
+			}
+		}
+	}
+
+	return vNear;
+}
+
+/// <summary>
+/// Generate the 3D convex envelope of the given points
+/// </summary>
 ConvexEnvelope3D Envelope3D(std::vector<Vertex>& S)
 {
 	std::vector<Tri> triangles;
@@ -277,32 +323,14 @@ ConvexEnvelope3D Envelope3D(std::vector<Vertex>& S)
 
 }
 
-Vertex nearestVertex(Vertex v, std::vector<Vertex> tabV)
-{
-	Vertex vNear;
-	float min = 10000.f;
-	float distance = 5000.f;
-	for (int i = 0; i < tabV.size(); ++i)
-	{
-		if (tabV[i] != v)
-		{
+#pragma endregion
 
-			distance = v.Distance(tabV[i]);
 
-			if (distance < min)
-			{
-				min = distance;
-				vNear = tabV[i];
-			}
-		}
-	}
+#pragma region Triangulation
 
-	return vNear;
-}
-
-//-------------------------------------Triangulation------------------------------------------
-
-//test si un point est visible par un edge
+/// <summary>
+/// Test if the point "v" is visible from the edge "e"
+/// </summary>
 bool isVisible(Vertex v, Edge e)
 {
 	Vec3 v1 = Vec3(v.x - e.getEdgePoints()[0]->x, v.y - e.getEdgePoints()[0]->y, 0);
@@ -313,6 +341,9 @@ bool isVisible(Vertex v, Edge e)
 	
 }
 
+/// <summary>
+/// Check if the edge "e" is in the vector "edges"
+/// </summary>
 void checkIfEdgeExist(Edge e, vector<Edge>& edges)
 {
 	auto it = std::find(edges.begin(), edges.end(), e);
@@ -322,6 +353,9 @@ void checkIfEdgeExist(Edge e, vector<Edge>& edges)
 		edges.push_back(e);
 }
 
+/// <summary>
+/// Generate an incremental triangulation with the given points
+/// </summary>
 Triangulation triangulateIncremental(std::vector<Vertex>& S)
 {
 	Triangulation laTri;
@@ -373,7 +407,9 @@ Triangulation triangulateIncremental(std::vector<Vertex>& S)
 	return laTri;
 }
 
-//check si le troisième point est dans le cercle circonscrit
+/// <summary>
+/// Check if the 2 triangles respect the Delaunay's criteria
+/// </summary>
 bool critereDelaunay(Tri t1, Tri t2)
 {
 	bool exterior = false;
@@ -396,7 +432,9 @@ bool critereDelaunay(Tri t1, Tri t2)
 	return exterior;
 }
 
-//Delaunay algorithm
+/// <summary>
+/// Generate a Delaunay's triangulation by flipping edge of an incremental triangulation
+/// </summary>>
 Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 {
 	Triangulation laTri = triangulateIncremental(S);
@@ -467,6 +505,9 @@ Triangulation triangulateDelaunay(std::vector<Vertex>& S)
 	return laTri;
 }
 
+/// <summary>
+/// Generate a Delaunay's triangulation using Delaunay's cores
+/// </summary>>
 Triangulation coreDelaunay(std::vector<Vertex>& S)
 {
 	Triangulation coreDelaunay;
@@ -571,7 +612,14 @@ Triangulation coreDelaunay(std::vector<Vertex>& S)
 	return coreDelaunay;
 }
 
-//Voronoi from Delaunay algorithm
+void removeCoreDelaunay(Triangulation& T, Vertex* p)
+{
+	//TODO : remove les point
+}
+
+/// <summary>
+/// Generate a voronoi diagram from a Delaunay's triangulation
+/// </summary>
 Triangulation voronoiDiagram(std::vector<Vertex>& S)
 {	
 	Triangulation delaunay = coreDelaunay(S);
@@ -643,3 +691,5 @@ Triangulation voronoiDiagram(std::vector<Vertex>& S)
 	voronoi.edge = voronoiEdge;
 	return delaunay;
 }
+
+#pragma endregion

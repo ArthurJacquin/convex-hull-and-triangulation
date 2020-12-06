@@ -38,6 +38,8 @@
 #include "Triangulation.h"
 #include "ConvexEnvelope3D.h"
 
+#pragma region Variables
+
 const char* glsl_version = "#version 420";
 
 //Variables globales
@@ -50,15 +52,11 @@ Input input;
 std::vector<Vertex> pointsCloud;
 std::vector<ConvexEnvelope> convexEnv;
 std::vector<ConvexEnvelope3D> convexEnv3D;
-std::vector<Mesh> meshes;
 Triangulation triangulation;
 
 std::vector<int> selectedPoints;
-
-bool movingPoint;
 int selectedPointId;
 
-Color choosedColor(1.f, 0.f, 0.f);
 int width = 1600;
 int height = 800;
 
@@ -72,6 +70,10 @@ int modelMatrixLocation;
 int viewMatrixLocation;
 int projectionMatrixLocation;
 int cameraPos_location;
+
+#pragma endregion
+
+#pragma region Rendering_Functions
 
 //Init scene rendering
 bool Initialise() {
@@ -162,13 +164,6 @@ void Display(GLFWwindow* window)
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
 
-
-	if (movingPoint)
-	{
-		//TODO : update point position and shape
-	}
-
-
 	//Création VAO
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -237,17 +232,6 @@ void Display(GLFWwindow* window)
 		glDrawArrays(GL_LINES, 0, 2);
 	}
 
-	//Draw Meshes
-	for (int i = 0; i < meshes.size(); ++i)
-	{
-		VBOCurrent = meshes[i].getVBO();
-		updateVBO();
-
-		glCullFace(GL_FRONT_AND_BACK);
-
-		glDrawElements(GL_TRIANGLES, meshes[i].getIndices().size(), GL_UNSIGNED_INT, meshes[i].getIndices().data());
-	}
-
 	//Désactivation des buffers
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -274,47 +258,37 @@ void displayGUI()
 	ImGui::SetNextWindowSize(ImVec2(300, 780));
 	// render your GUI
 	ImGui::Begin("Bezier", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-	ImGui::TextColored(ImVec4(0.9, 0.1, 0.1, 1.0), "  Bienvenue dans Bezier ");
-	ImGui::Separator();
-
-	static float color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	ImGui::TextColored(ImVec4(0.9, 0.1, 0.1, 1.0), "  Enveloppes convexes et triangulation ");
 	ImGui::Text("");
-	ImGui::Text("   Choississez la couleur ");
-	ImGui::Text("       de la courbe: ");
-	if (ImGui::ColorEdit3("Color", color))
-	{
-		choosedColor = color;
-	}
 
+	//-------------------------------------------------------------------------Keys Guide---------------------------------------------------------
 	ImGui::Separator();
 	ImGui::Text("");
 	ImGui::Text("  Pour selectionner un point :");
 	ImGui::Text("  clic droit");
 	ImGui::Text("");
+
+	//-------------------------------------------------------------------------Point generation---------------------------------------------------------
 	ImGui::Separator();
-	ImGui::Text("");
-	ImGui::Text("  Pour deplacer un point :");
-	ImGui::Text("  Alt + clic droit");
+	ImGui::Text("            Generation de points    ");
 	ImGui::Text("");
 
-	ImGui::Separator();
-	ImGui::Text("            Enveloppes convexes    ");
-	ImGui::Text("");
-
-	if (ImGui::Button("Jarvis"))
-	{
-		convexEnv.push_back(Jarvis(pointsCloud));
-	}
-
-	if (ImGui::Button("GrahamScan"))
-	{
-		convexEnv.push_back(GrahamScan(pointsCloud));
-	}
-	static int taille = 9;
-	ImGui::Text("Number of points :");
+	static int taille = 10;
+	ImGui::Text("Nombre de points :");
 	ImGui::InputInt("", &taille);
 
-	if (ImGui::Button("Generate 3D cloud"))
+	if (ImGui::Button("Generer nuage 2D"))
+	{
+		pointsCloud.clear();
+		for (int i = 0; i < taille; ++i)
+		{
+			double x = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
+			double y = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
+
+			pointsCloud.push_back(Vertex(x, y, 0));
+		}
+	}
+	if (ImGui::Button("Generer nuage 3D"))
 	{
 		pointsCloud.clear();
 		for (int i = 0; i < taille; ++i)
@@ -326,12 +300,27 @@ void displayGUI()
 			pointsCloud.push_back(Vertex(x, y, z));
 		}
 	}
+	ImGui::Text("");
 
+	//-------------------------------------------------------------------------Convex envelope---------------------------------------------------------
+	ImGui::Separator();
+	ImGui::Text("            Enveloppes convexes    ");
+	ImGui::Text("");
+	if (ImGui::Button("Jarvis"))
+	{
+		convexEnv.push_back(Jarvis(pointsCloud));
+	}
+	if (ImGui::Button("GrahamScan"))
+	{
+		convexEnv.push_back(GrahamScan(pointsCloud));
+	}
 	if (ImGui::Button("Enveloppe 3D"))
 	{
 		convexEnv3D.push_back(Envelope3D(pointsCloud));
 	}
+	ImGui::Text("");
 
+	//-------------------------------------------------------------------------Triangulation---------------------------------------------------------
 	ImGui::Separator();
 	ImGui::Text("            Triangulation    ");
 	ImGui::Text("");
@@ -347,16 +336,23 @@ void displayGUI()
 	{
 		triangulation = coreDelaunay(pointsCloud);
 	}
+	if (ImGui::Button("Suppression Delaunay"))
+	{
+		for (size_t i = 0; i < selectedPoints.size(); i++)
+		{
+			removeCoreDelaunay(triangulation, &pointsCloud[selectedPoints[i]]);
+		}
+	}
 	if (ImGui::Button("Diagramme de Voronoi"))
 	{
 		triangulation = voronoiDiagram(pointsCloud);
 	}
-
-	ImGui::Separator();
-	ImGui::Text("            Visualizer    ");
 	ImGui::Text("");
 
-
+	//-------------------------------------------------------------------------Visualisation tools---------------------------------------------------------
+	ImGui::Separator();
+	ImGui::Text("        Outils de visualisation    ");
+	ImGui::Text("");
 	if (ImGui::Button("Wireframe"))
 	{
 		enableWireframe = !enableWireframe;
@@ -367,23 +363,16 @@ void displayGUI()
 		enableNormal = !enableNormal;
 	}
 	ImGui::Text("");
-	ImGui::Separator();
-	ImGui::Text("");
-	//3D viewport 
 	if (ImGui::Button("3D Viewport"))
 	{
 		enable3DViewport = !enable3DViewport;
 		updateVBO();
 	}
 	ImGui::Text("");
-	ImGui::Separator();
-	ImGui::Text("");
-	//clear all 
-	if (ImGui::Button("Delete"))
+	if (ImGui::Button("Nettoyer le viewport"))
 	{
 		pointsCloud.clear();
 		convexEnv.clear();
-		meshes.clear();
 		triangulation.clear();
 		convexEnv3D.clear();
 		selectedPoints.clear();
@@ -395,7 +384,6 @@ void displayGUI()
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-
 
 //Main
 int main(void)
@@ -450,3 +438,4 @@ int main(void)
 	return 0;
 }
 
+#pragma endregion

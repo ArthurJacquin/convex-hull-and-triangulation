@@ -14,11 +14,10 @@ ConvexEnvelope3D Envelope3D(std::vector<Vertex>& S);
 
 Triangulation triangulateIncremental(std::vector<Vertex>& S);
 
-float sign(Vertex p1, Vertex p2, Vertex p3);
-bool PointInTriangle(Vertex pt, Vertex v1, Vertex v2, Vertex v3);
-
 Triangulation triangulateDelaunay(std::vector<Vertex>& S);
 
 Triangulation coreDelaunay(std::vector<Vertex>& S);
+
+void removeCoreDelaunay(Triangulation& T, Vertex* p);
 
 Triangulation voronoiDiagram(std::vector<Vertex>& S);
