@@ -21,7 +21,7 @@ struct Triangulation
 	{
 		for (size_t i = 0; i < tri.size(); ++i)
 		{
-			if (tri[i].isPointInTriangle(p)) return true;
+			if (tri[i].isPointInsideTriangle(p)) return true;
 		}
 		return false;
 	}
@@ -31,7 +31,7 @@ struct Triangulation
 		for (size_t i = 0; i < tri.size(); ++i)
 		{
 			//au cas ou si c'est sur une arete : que faire ?? 
-			if (tri[i].isPointInTriangle(p)) return i;
+			if (tri[i].isPointInsideTriangle(p)) return i;
 		}
 		return -1;
 	}
@@ -43,6 +43,30 @@ struct Triangulation
 			if (e == edge[i]) return i;
 		}
 		return -1;
+	}
+
+	std::vector<int> GetEdgeFromPoint(Vertex* v)
+	{
+		std::vector<int> leVector;
+
+		for (size_t e = 0; e < edge.size(); ++e)
+		{
+			if (*v == *edge[e].getEdgePoints()[0] || *v == *edge[e].getEdgePoints()[1])
+				leVector.push_back(e);
+		}
+
+		return leVector;
+	}
+
+	std::vector<int> GetTriFromPoint(Vertex* v)
+	{
+		std::vector<int> leVector;
+		for (size_t e = 0; e < tri.size(); ++e)
+		{
+			if (v == tri[e].getPoints()[0] || v == tri[e].getPoints()[1] || v == tri[e].getPoints()[2])
+				leVector.push_back(e);
+		}
+		return leVector;
 	}
 
 	std::vector<int> GetEdgeIndexByTriangle(Tri triangle)
@@ -77,6 +101,21 @@ struct Triangulation
 			}
 		}
 		return -1;
+	}
+
+	Edge GetTriangleEdgeByEdge(Edge edge)
+	{
+		for (int t = 0; t < tri.size(); ++t)
+		{
+			for (int e = 0; e < tri[t].getEdge().size(); ++e)
+			{
+				if (edge == tri[t].getEdge()[e])
+				{
+					return tri[t].getEdge()[e];
+				}
+			}
+		}
+		return Edge();
 	}
 	
 	void clear()

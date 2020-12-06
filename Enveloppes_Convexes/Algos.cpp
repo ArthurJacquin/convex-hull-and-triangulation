@@ -329,7 +329,7 @@ ConvexEnvelope3D Envelope3D(std::vector<Vertex>& S)
 #pragma region Triangulation
 
 /// <summary>
-/// Test if the point "v" is visible from the edge "e"
+/// Test if the point "v" is visible from the edge "e" THE BEST
 /// </summary>
 bool isVisible(Vertex v, Edge e)
 {
@@ -614,7 +614,259 @@ Triangulation coreDelaunay(std::vector<Vertex>& S)
 
 void removeCoreDelaunay(Triangulation& T, Vertex* p)
 {
-	//TODO : remove les point
+	p->setColor(Color(1, 1, 1));
+
+	//Si on a un edge, on veut supprimer cette edge et le point p
+	if (T.edge.size() < 2)
+	{
+		T.edge.clear();
+		return;
+	}
+	else if (T.edge.size() == 2)
+	{
+		std::vector<int> leEdge = T.GetEdgeFromPoint(p);
+		std::vector<Vertex*> lesV;
+		if (leEdge.size() > 1)
+		{
+			for (int i = 0; i < leEdge.size(); ++i)
+			{
+				if (T.edge[leEdge[i]].getEdgePoints()[0] != p)
+					lesV.push_back(T.edge[leEdge[i]].getEdgePoints()[0]);
+				else if (T.edge[leEdge[i]].getEdgePoints()[1] != p)
+					lesV.push_back(T.edge[leEdge[i]].getEdgePoints()[1]);
+			}
+
+			T.edge.clear();
+			T.edge.push_back(Edge(lesV[0], lesV[1]));
+		}
+		else
+		{
+			for (int i = 0; i < leEdge.size(); ++i)
+			{
+				if (T.edge[leEdge[i]].getEdgePoints()[0] == p || T.edge[leEdge[i]].getEdgePoints()[1] == p)
+				{
+					T.edge.erase(T.edge.begin() + i);
+				}
+			}
+		}
+		return;
+	}
+
+	//index des triangles et edge à supprimer
+	std::vector<int> indexEdgeToRemove = T.GetEdgeFromPoint(p);
+	std::vector<int> indexTriToRemove = T.GetTriFromPoint(p);
+
+	//stock des edges du tri différents du point
+	std::vector<Edge> edgeToKeep;
+	for (int i = 0; i < indexTriToRemove.size(); ++i)
+	{
+		for (size_t j = 0; j < 3; j++)
+		{
+			if (T.tri[indexTriToRemove[i]].getEdge()[j].getEdgePoints()[0] != p && T.tri[indexTriToRemove[i]].getEdge()[j].getEdgePoints()[1] != p)
+				edgeToKeep.push_back(T.tri[indexTriToRemove[i]].getEdge()[j]);
+		}
+	}
+
+	std::vector<int> indexEdgeToKeep;
+	//stock les edges de la triangulation différents du point
+	for (int i = 0; i < T.edge.size(); ++i)
+	{
+		for (int j = 0; j < edgeToKeep.size(); ++j)
+		{
+			if (T.edge[i] == edgeToKeep[j])
+			{
+				indexEdgeToKeep.push_back(i);
+				break;
+			}
+		}
+	}
+
+	std::vector<Vertex*> pointToTest;
+
+	//suppression des edges de la tri
+	std::sort(indexEdgeToRemove.begin(), indexEdgeToRemove.end(), greater<int>());
+	for (int i = 0; i < indexEdgeToRemove.size(); ++i)
+	{
+		if (T.edge[indexEdgeToRemove[i]].getEdgePoints()[0] != p)
+		{
+			pointToTest.push_back(T.edge[indexEdgeToRemove[i]].getEdgePoints()[0]);
+		}
+		else
+		{
+			pointToTest.push_back(T.edge[indexEdgeToRemove[i]].getEdgePoints()[1]);
+		}
+		T.edge.erase(T.edge.begin() + indexEdgeToRemove[i]);
+	}
+
+	//suppression des tris de la tri
+	std::sort(indexTriToRemove.begin(), indexTriToRemove.end(), greater<int>());
+	for (int i = 0; i < indexTriToRemove.size(); ++i)
+	{
+		T.tri.erase(T.tri.begin() + indexTriToRemove[i]);
+	}
+
+	//check polygon fermé
+	bool ferme = true;
+	for (int i = 0; i < pointToTest.size(); ++i)
+	{
+		int compteur = 0;
+		for (int j = 0; j < edgeToKeep.size(); ++j)
+		{
+			if (pointToTest[i] == edgeToKeep[j].getEdgePoints()[0] || pointToTest[i] == edgeToKeep[j].getEdgePoints()[1])
+			{
+				compteur++;
+			}
+		}
+
+		if (compteur != 2)
+		{
+			ferme = false;
+			break;
+		}
+	}
+
+	if (ferme)
+	{
+		while (edgeToKeep.size() > 3)
+		{
+			bool createTri = false;
+
+			for (int i = 0; i < edgeToKeep.size(); ++i)
+			{
+				for (int j = 0; j < edgeToKeep.size(); ++j)
+				{
+					if (i == j)
+						continue;
+
+					//les tests des indices pour le nouveau triangle
+					Tri newTri;
+					if (edgeToKeep[i].getEdgePoints()[0] == edgeToKeep[j].getEdgePoints()[0])
+					{
+						newTri = Tri(edgeToKeep[i].getEdgePoints()[0], edgeToKeep[j].getEdgePoints()[1], edgeToKeep[i].getEdgePoints()[1]);
+					}
+					else if (edgeToKeep[i].getEdgePoints()[0] == edgeToKeep[j].getEdgePoints()[1])
+					{
+						newTri = Tri(edgeToKeep[i].getEdgePoints()[0], edgeToKeep[j].getEdgePoints()[0], edgeToKeep[i].getEdgePoints()[1]);
+					}
+					else if (edgeToKeep[i].getEdgePoints()[1] == edgeToKeep[j].getEdgePoints()[0])
+					{
+						newTri = Tri(edgeToKeep[i].getEdgePoints()[1], edgeToKeep[i].getEdgePoints()[0], edgeToKeep[j].getEdgePoints()[1]);
+					}
+					else
+					{
+						continue;
+					}
+
+					bool inCircle = false;
+					for (int p = 0; p < pointToTest.size(); ++p)
+					{
+						//check si delaunay
+						if (!newTri.isPointInTriangle(pointToTest[p]) && newTri.isPointInCircle(*pointToTest[p]))
+						{
+							inCircle = true;
+							break;
+						}
+					}
+					if (!inCircle)
+					{
+						createTri = true;
+
+						//ajout du nouveau tri si criteredelaunay
+						T.tri.push_back(newTri);
+						for (int e = 0; e < 3; ++e)
+						{
+							if (edgeToKeep[i] != newTri.getEdge()[e] && edgeToKeep[j] != newTri.getEdge()[e])
+							{
+								//ajout de la troisieme edge du nouveau tri
+								T.edge.push_back(newTri.getEdge()[e]);
+								edgeToKeep.push_back(newTri.getEdge()[e]);
+							}
+						}
+						//suppression arêtes a1 et a2
+						if (j < i)
+						{
+							edgeToKeep.erase(edgeToKeep.begin() + i);
+							edgeToKeep.erase(edgeToKeep.begin() + j);
+						}
+						else
+						{
+							edgeToKeep.erase(edgeToKeep.begin() + j);
+							edgeToKeep.erase(edgeToKeep.begin() + i);
+						}
+
+						//suppression du point p dans le tableau de tous les points 
+						for (int l = 0; l < pointToTest.size(); l++)
+						{
+							if (newTri.getPoints()[0] == pointToTest[l])
+							{
+								pointToTest.erase(pointToTest.begin() + l);
+								break;
+							}
+						} 
+						break;
+					} 
+				}
+
+				if (createTri)
+					break;
+			}
+		}
+		T.tri.push_back(Tri(pointToTest[0], pointToTest[1], pointToTest[2]));
+	}
+	else 
+	{
+		bool allGood = false;
+		while (pointToTest.size() > 2 || allGood == false)
+		{
+			//recherche du point sans amis
+			for (int i = 0; i < pointToTest.size(); ++i)
+			{
+				int compteur = 0;
+				for (int j = 0; j < edgeToKeep.size(); ++j)
+				{
+					if (pointToTest[i] == edgeToKeep[j].getEdgePoints()[0] || pointToTest[i] == edgeToKeep[j].getEdgePoints()[1])
+					{
+						compteur++;
+					}
+				}
+
+				if (compteur != 2)
+				{
+					for (int e = 0; e < edgeToKeep.size(); ++e)
+					{
+						if (T.GetTriangleIndexByEdge(edgeToKeep[e]) == -1 || isVisible(*pointToTest[i], T.GetTriangleEdgeByEdge(edgeToKeep[e])))
+						{
+							//triangle avec le nouveau point
+							T.tri.push_back(Tri(edgeToKeep[e].getEdgePoints()[0],
+								pointToTest[i],
+								edgeToKeep[e].getEdgePoints()[1]));
+
+							Edge newEdge = Edge(edgeToKeep[e].getEdgePoints()[0], pointToTest[i]);
+							Edge newEdge1 = Edge(pointToTest[i], edgeToKeep[e].getEdgePoints()[1]);
+
+							checkIfEdgeExist(newEdge, T.edge);
+							checkIfEdgeExist(newEdge1, T.edge);
+
+							checkIfEdgeExist(newEdge, edgeToKeep);
+							checkIfEdgeExist(newEdge1, edgeToKeep);
+
+							//l'edge n'est plus un bord
+							T.edge[T.GetIndexEdge(edgeToKeep[e])].setInterior();
+
+							edgeToKeep.erase(edgeToKeep.begin() + e);
+							e--;
+						}
+
+					}
+					pointToTest.erase(pointToTest.begin() + i);
+					break;
+				}
+			}
+			
+			allGood = true;
+		}
+	}
+
 }
 
 /// <summary>

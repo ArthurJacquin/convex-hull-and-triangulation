@@ -44,8 +44,9 @@ public:
 
 	void cercleCirconscrit();
 	
-	bool isPointInTriangle(Vertex p) const;
+	bool isPointInsideTriangle(Vertex p) const;
 	bool isPointInCircle(Vertex p) const;
-	
+	bool isPointInTriangle(Vertex* p) const;
+
 	bool operator==(Tri t);
 };

@@ -81,7 +81,7 @@ void Tri::cercleCirconscrit()
 	radius = (circleCenter.GetPos() - points[0]->GetPos()).magnitude();
 }
 
-bool Tri::isPointInTriangle(Vertex p) const
+bool Tri::isPointInsideTriangle(Vertex p) const
 {
 	float s = points[0]->y * points[2]->x - points[0]->x * points[2]->y + (points[2]->y - points[0]->y) * p.x + (points[0]->x - points[2]->x) * p.y;
 	float t = points[0]->x * points[1]->y - points[0]->y * points[1]->x + (points[0]->y - points[1]->y) * p.x + (points[1]->x - points[0]->x) * p.y;
@@ -99,6 +99,11 @@ bool Tri::isPointInTriangle(Vertex p) const
 bool Tri::isPointInCircle(Vertex p) const
 {
 	return (circleCenter.GetPos() - p.GetPos()).magnitude() <= radius + 0.000001;
+}
+
+bool Tri::isPointInTriangle(Vertex* p) const
+{
+	return points[0] == p || points[1] == p || points[2] == p;
 }
 
 bool Tri::operator==(Tri t)

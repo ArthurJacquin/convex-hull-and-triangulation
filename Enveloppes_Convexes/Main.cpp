@@ -287,6 +287,13 @@ void displayGUI()
 
 			pointsCloud.push_back(Vertex(x, y, 0));
 		}
+		/*pointsCloud.push_back(Vertex(0.14, 0.7, 0));
+		pointsCloud.push_back(Vertex(0.23, 0.19, 0));
+		pointsCloud.push_back(Vertex(0.18, -0.35, 0));
+		pointsCloud.push_back(Vertex(0.03, -0.18, 0));
+		pointsCloud.push_back(Vertex(0.01, -0.6, 0));
+		pointsCloud.push_back(Vertex(-0.23, -0.26, 0));
+		pointsCloud.push_back(Vertex(-0.19, 0.39, 0));*/
 	}
 	if (ImGui::Button("Generer nuage 3D"))
 	{
@@ -342,6 +349,11 @@ void displayGUI()
 		{
 			removeCoreDelaunay(triangulation, &pointsCloud[selectedPoints[i]]);
 		}
+		for (size_t i = 0; i < selectedPoints.size(); i++)
+		{
+			pointsCloud.erase(pointsCloud.begin() + selectedPoints[i]);
+		}
+		selectedPoints.clear();
 	}
 	if (ImGui::Button("Diagramme de Voronoi"))
 	{
