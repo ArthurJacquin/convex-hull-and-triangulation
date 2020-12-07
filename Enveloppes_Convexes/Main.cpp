@@ -282,18 +282,11 @@ void displayGUI()
 		pointsCloud.clear();
 		for (int i = 0; i < taille; ++i)
 		{
-			double x = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
-			double y = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 0.4f)) - 0.2f;
+			double x = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 1.5f)) - 0.5f;
+			double y = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / 1.8f)) - 0.9f;
 
 			pointsCloud.push_back(Vertex(x, y, 0));
 		}
-		/*pointsCloud.push_back(Vertex(0.14, 0.7, 0));
-		pointsCloud.push_back(Vertex(0.23, 0.19, 0));
-		pointsCloud.push_back(Vertex(0.18, -0.35, 0));
-		pointsCloud.push_back(Vertex(0.03, -0.18, 0));
-		pointsCloud.push_back(Vertex(0.01, -0.6, 0));
-		pointsCloud.push_back(Vertex(-0.23, -0.26, 0));
-		pointsCloud.push_back(Vertex(-0.19, 0.39, 0));*/
 	}
 	if (ImGui::Button("Generer nuage 3D"))
 	{
