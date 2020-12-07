@@ -345,14 +345,15 @@ void displayGUI()
 	}
 	if (ImGui::Button("Suppression Delaunay"))
 	{
+		std::sort(selectedPoints.begin(), selectedPoints.end(), greater<int>());
 		for (size_t i = 0; i < selectedPoints.size(); i++)
 		{
 			removeCoreDelaunay(triangulation, &pointsCloud[selectedPoints[i]]);
 		}
-		for (size_t i = 0; i < selectedPoints.size(); i++)
+		/*for (size_t i = 0; i < selectedPoints.size(); i++)
 		{
 			pointsCloud.erase(pointsCloud.begin() + selectedPoints[i]);
-		}
+		}*/
 		selectedPoints.clear();
 	}
 	if (ImGui::Button("Diagramme de Voronoi"))
