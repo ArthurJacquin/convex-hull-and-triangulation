@@ -350,10 +350,10 @@ void displayGUI()
 		{
 			removeCoreDelaunay(triangulation, &pointsCloud[selectedPoints[i]]);
 		}
-		/*for (size_t i = 0; i < selectedPoints.size(); i++)
+		for (size_t i = 0; i < selectedPoints.size(); i++)
 		{
-			pointsCloud.erase(pointsCloud.begin() + selectedPoints[i]);
-		}*/
+			pointsCloud[selectedPoints[i]].setColor(Color(0, 0, 0));
+		}
 		selectedPoints.clear();
 	}
 	if (ImGui::Button("Diagramme de Voronoi"))

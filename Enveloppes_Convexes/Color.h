@@ -11,6 +11,8 @@ public:
 	Color& operator=(Color b);
 	Color& operator=(static float* b);
 	Color& operator-(Color b);
+	bool operator!=(Color c);
+
 
 	friend std::ostream& operator<<(std::ostream&, const Color& obj);
 };

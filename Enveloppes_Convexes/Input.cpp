@@ -55,7 +55,7 @@ void Input::select(float x, float y)
 	for(int i = 0; i < pointsCloud.size(); ++i)
 	{
 		float d = getDistance(x, y, pointsCloud[i]);
-		if (d < minDist)
+		if (d < minDist && pointsCloud[i].GetColor() != Color(0, 0, 0))
 		{
 			minDist = d;
 			selectedPointId = i;

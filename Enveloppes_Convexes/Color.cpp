@@ -25,6 +25,11 @@ Color& Color::operator-(Color b)
 	return *this;
 }
 
+bool Color::operator!=(Color c)
+{
+	return x != c.x || y != c.y || z != c.z;
+}
+
 std::ostream& operator<<(std::ostream& os, const Color& obj)
 {
 	os << "(" << obj.x << ", " << obj.y << ", " << obj.z << ")" << std::endl;

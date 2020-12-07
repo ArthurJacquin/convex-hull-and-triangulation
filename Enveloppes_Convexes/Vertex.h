@@ -31,6 +31,7 @@ struct Vertex
 	double Distance(Vertex v2) { return sqrt(pow((v2.x - x), 2) + pow((v2.y - y),2) + pow((v2.z - z), 2)); }
 
 	Vec3 GetPos()const { return Vec3(x, y, z); }
+	Color GetColor()const { return Color(r, g, b); }
 	std::vector<Vertex*> getNeighborVertices() const { return neighborVertices; }
 	void addNeighborVertices(Vertex* v) { neighborVertices.push_back(v); }
 };
