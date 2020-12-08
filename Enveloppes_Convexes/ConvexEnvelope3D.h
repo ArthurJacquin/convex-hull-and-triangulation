@@ -15,7 +15,6 @@ public:
 
 	//Utility
 	void Clear();
-	void CalculateNormals();
 
 	//Setters
 	void SetPoints(const vector<Tri> tri) { triangles = tri; }
