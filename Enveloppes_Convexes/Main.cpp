@@ -264,20 +264,20 @@ void displayGUI()
 	//-------------------------------------------------------------------------Keys Guide---------------------------------------------------------
 	ImGui::Separator();
 	ImGui::Text("");
-	ImGui::Text("  Pour selectionner un point :");
-	ImGui::Text("  clic droit");
+	ImGui::Text("  Select a point :");
+	ImGui::Text("  right click");
 	ImGui::Text("");
 
 	//-------------------------------------------------------------------------Point generation---------------------------------------------------------
 	ImGui::Separator();
-	ImGui::Text("            Generation de points    ");
+	ImGui::Text("            Generate points    ");
 	ImGui::Text("");
 
 	static int taille = 10;
-	ImGui::Text("Nombre de points :");
+	ImGui::Text("Number of points :");
 	ImGui::InputInt("", &taille);
 
-	if (ImGui::Button("Generer nuage 2D"))
+	if (ImGui::Button("Generate 2D points cloud"))
 	{
 		pointsCloud.clear();
 		for (int i = 0; i < taille; ++i)
@@ -288,7 +288,7 @@ void displayGUI()
 			pointsCloud.push_back(Vertex(x, y, 0));
 		}
 	}
-	if (ImGui::Button("Generer nuage 3D"))
+	if (ImGui::Button("Generate 3D points cloud"))
 	{
 		pointsCloud.clear();
 		for (int i = 0; i < taille; ++i)
@@ -304,7 +304,7 @@ void displayGUI()
 
 	//-------------------------------------------------------------------------Convex envelope---------------------------------------------------------
 	ImGui::Separator();
-	ImGui::Text("            Enveloppes convexes    ");
+	ImGui::Text("            Convex Hull    ");
 	ImGui::Text("");
 	if (ImGui::Button("Jarvis"))
 	{
@@ -314,7 +314,7 @@ void displayGUI()
 	{
 		convexEnv.push_back(GrahamScan(pointsCloud));
 	}
-	if (ImGui::Button("Enveloppe 3D"))
+	if (ImGui::Button("3D convex hull"))
 	{
 		convexEnv3D.push_back(Envelope3D(pointsCloud));
 	}
@@ -324,19 +324,19 @@ void displayGUI()
 	ImGui::Separator();
 	ImGui::Text("            Triangulation    ");
 	ImGui::Text("");
-	if (ImGui::Button("Triangulation quelconque"))
+	if (ImGui::Button("Incremental"))
 	{
 		triangulation = triangulateIncremental(pointsCloud);
 	}
-	if (ImGui::Button("Triangulation Delaunay"))
+	if (ImGui::Button("Flipping edges from incremental"))
 	{
 		triangulation = triangulateDelaunay(pointsCloud);
 	}
-	if (ImGui::Button("Noyau de Delaunay"))
+	if (ImGui::Button("Delaunay"))
 	{
 		triangulation = coreDelaunay(pointsCloud);
 	}
-	if (ImGui::Button("Suppression Delaunay"))
+	if (ImGui::Button("Delete delaunay point"))
 	{
 		std::sort(selectedPoints.begin(), selectedPoints.end(), greater<int>());
 		for (size_t i = 0; i < selectedPoints.size(); i++)
@@ -349,7 +349,7 @@ void displayGUI()
 		}
 		selectedPoints.clear();
 	}
-	if (ImGui::Button("Diagramme de Voronoi"))
+	if (ImGui::Button("2D Voronoi"))
 	{
 		triangulation = voronoiDiagram(pointsCloud);
 	}
@@ -357,7 +357,6 @@ void displayGUI()
 
 	//-------------------------------------------------------------------------Visualisation tools---------------------------------------------------------
 	ImGui::Separator();
-	ImGui::Text("        Outils de visualisation    ");
 	ImGui::Text("");
 	if (ImGui::Button("Wireframe"))
 	{
@@ -375,7 +374,7 @@ void displayGUI()
 		updateVBO();
 	}
 	ImGui::Text("");
-	if (ImGui::Button("Nettoyer le viewport"))
+	if (ImGui::Button("Delete all curves"))
 	{
 		pointsCloud.clear();
 		convexEnv.clear();
